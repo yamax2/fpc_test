@@ -1,5 +1,5 @@
 program Test;
-{$MODE OBJFPC}
+{$MODE OBJFPC}{$H+}
 
 uses
 {$ifdef unix}
@@ -20,7 +20,7 @@ type
   end;
 
 const
-  BUF_SIZE = 2048;
+  BUF_SIZE = 16384;
 
 procedure ReadIt(Thread: TMyThread);
 var
