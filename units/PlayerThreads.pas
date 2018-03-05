@@ -46,6 +46,8 @@ type
   public
     constructor Create(AManager: TPlayerThreadManager);
     destructor Destroy; override;
+
+    property Manager: TPlayerThreadManager read FManager;
   end;
 
 
