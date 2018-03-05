@@ -148,7 +148,8 @@ end;
 
 procedure TPlayerThreadManager.Interrupt;
 begin
- RtlEventSetEvent(FEvent);
+  Terminate;
+  RtlEventSetEvent(FEvent);
 end;
 
 class constructor TPlayerThreadManager.ClassCreate;

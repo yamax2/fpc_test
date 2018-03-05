@@ -3,17 +3,22 @@ program Test;
 {$define debug}
 
 uses
-  PlayerThreads in 'units/PlayerThreads',
-  PlayerExtractors in 'units/PlayerExtractors',
+{$ifdef unix}
+  cthreads,
+  cmem,
+{$endif}
 {$ifdef debug}
   HeapTrc,
 {$endif}
+  PlayerThreads in 'units/PlayerThreads',
+  PlayerExtractors in 'units/PlayerExtractors',
   Process,
   Classes,
   SysUtils;
 
 const
   BUF_SIZE = 16384;
+  VIDEO_DIR = '/win/video/2018_01a/zz14-04-01-2018';
 
 type
   { TTestThread }
@@ -33,12 +38,18 @@ type
   private
     FCount: Integer;
   protected
+    function GetMaxThreadCount: Integer; override;
     function GetNextThread: TPlayerThread; override;
   public
     constructor Create;
   end;
 
 { TTestThreadManager }
+
+function TTestThreadManager.GetMaxThreadCount: Integer;
+begin
+  Result:=2;
+end;
 
 function TTestThreadManager.GetNextThread: TPlayerThread;
 begin
@@ -93,7 +104,11 @@ begin
  inherited Create(AManager);
 end;
 
+var
+  T: TTestThreadManager;
 begin
-  TTestThreadManager.Create;
+  T:=TTestThreadManager.Create;
+  Sleep(500);
+  T.Interrupt;
 end.
 
