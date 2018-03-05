@@ -3,170 +3,44 @@ program Test;
 {$define debug}
 
 uses
-{$ifdef unix}
-  cthreads,
-  cmem,
-{$endif}
+  PlayerThreads in 'units/PlayerThreads',
+  PlayerExtractors in 'units/PlayerExtractors',
 {$ifdef debug}
   HeapTrc,
 {$endif}
-  Classes, SysUtils, Process;
-
-type
-  TMyThread = class;
-
-  { TMyThreadManager }
-
-  TMyThreadManager = class(TThread)
-  private
-    FEvent: pRTLEvent;
-    FList: TThreadList;
-  protected
-    procedure Execute; override;
-    function GetNextThread: TMyThread; virtual;
-    function GetMaxThreadCount: Integer; virtual;
-    procedure Process(AFinishedThread: TMyThread = nil);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Interrupt;
-    property MaxThreadCount: Integer read GetMaxThreadCount;
-  end;
-
-  { TMyThread }
-
-  TMyThread = class(TThread)
-  private
-    FManager: TMyThreadManager;
-  public
-    constructor Create(AManager: TMyThreadManager);
-    destructor Destroy; override;
-  end;
-
-{ TMyThread }
-
-constructor TMyThread.Create(AManager: TMyThreadManager);
-begin
-  FManager:=AManager;
-  inherited Create(True);
-  FreeOnTerminate:=True;
-end;
-
-destructor TMyThread.Destroy;
-begin
-  FManager.Process(Self);
-  inherited;
-end;
-
-{ TMyThreadManager }
-
-constructor TMyThreadManager.Create;
-begin
-  FList:=TThreadList.Create;
-  FEvent:=RTLEventCreate;
-  inherited Create(False);
-  FreeOnTerminate:=True;
-end;
-
-destructor TMyThreadManager.Destroy;
-begin
-  FList.Free;
-  RTLeventdestroy(FEvent);
-  inherited;
-end;
-
-procedure TMyThreadManager.Interrupt;
-begin
-  RtlEventSetEvent(FEvent);
-end;
-
-function TMyThreadManager.GetNextThread: TMyThread;
-begin
-  Result:=nil;
-end;
-
-procedure TMyThreadManager.Process(AFinishedThread: TMyThread = nil);
-var
-  List: TList;
-  NextThread: TMyThread;
-begin
- List:=FList.LockList;
- try
-   if AFinishedThread <> nil then List.Remove(AFinishedThread);
-   if not (List.Count < GetMaxThreadCount) or Terminated then Exit;
-
-   repeat
-     NextThread:=GetNextThread;
-     if NextThread <> nil then
-     begin
-       List.Add(NextThread);
-       NextThread.Start;
-     end;
-   until (NextThread = nil) or not (List.Count < GetMaxThreadCount);
-
-   if NextThread = nil then Interrupt;
- finally
-   FList.UnlockList;
- end;
-end;
-
-function TMyThreadManager.GetMaxThreadCount: Integer;
-begin
-  Result:=2;
-end;
-
-procedure TMyThreadManager.Execute;
-var
-  List: TList;
-  Handles: array of TThreadID;
-  Index: Integer;
-begin
- Process;
- RtlEventWaitFor(FEvent);
- Terminate;
-
- List:=FList.LockList;
- try
-   SetLength(Handles, List.Count);
-   for Index:=0 to List.Count - 1 do Handles[Index]:=TThread(List[Index]).Handle;
- finally
-   FList.UnlockList;
- end;
-
- for Index:=0 to Length(Handles) - 1 do
-   WaitForThreadTerminate(Handles[Index], 0);
-end;
+  Process,
+  Classes,
+  SysUtils;
 
 const
   BUF_SIZE = 16384;
 
 type
-
   { TTestThread }
 
-  TTestThread = class(TMyThread)
+  TTestThread = class(TPlayerThread)
   private
     FNumber: Integer;
   protected
     procedure Execute; override;
   public
-    constructor Create(AManager: TMyThreadManager; ANumber: Integer);
+    constructor Create(AManager: TPlayerThreadManager; ANumber: Integer);
   end;
 
   { TTestThreadManager }
 
-  TTestThreadManager = class(TMyThreadManager)
+  TTestThreadManager = class(TPlayerThreadManager)
   private
     FCount: Integer;
   protected
-    function GetNextThread: TMyThread; override;
+    function GetNextThread: TPlayerThread; override;
   public
     constructor Create;
   end;
 
 { TTestThreadManager }
 
-function TTestThreadManager.GetNextThread: TMyThread;
+function TTestThreadManager.GetNextThread: TPlayerThread;
 begin
   Inc(FCount);
   if FCount <= 9 then Result:=TTestThread.Create(Self, FCount) else Result:=nil;
@@ -213,15 +87,13 @@ begin
   end;
 end;
 
-constructor TTestThread.Create(AManager: TMyThreadManager; ANumber: Integer);
+constructor TTestThread.Create(AManager: TPlayerThreadManager; ANumber: Integer);
 begin
  FNumber:=ANumber;
  inherited Create(AManager);
 end;
 
-var
-  T: TThread;
 begin
-  T:=TTestThreadManager.Create;
-  T.WaitFor;
+  TTestThreadManager.Create;
 end.
+
