@@ -38,9 +38,81 @@ type
     procedure Extract; override;
   end;
 
+  { TPlayerTrackParser }
+
+  TPlayerTrackParser = class
+  private
+    FFileName: String;
+    FOutputFileName: String;
+  public
+    constructor Create(const AFileName, AOutputFileName: String); virtual;
+    procedure Parse; virtual; abstract;
+
+    property FileName: String read FFileName;
+    property OutputFileName: String read FOutputFileName;
+  end;
+
+  { TPlayerNmeaTrackParser }
+
+  TPlayerNmeaTrackParser = class(TPlayerTrackParser)
+  public
+    procedure Parse; override;
+  end;
+
 implementation
 uses
   Process;
+
+{ TPlayerNmeaTrackParser }
+
+procedure TPlayerNmeaTrackParser.Parse;
+const
+  BUF_SIZE = 16384;
+var
+  Process: TProcess;
+  OutputStream: TFileStream;
+  Buffer: array[0..BUF_SIZE - 1] of Byte;
+  BytesRead: LongInt;
+begin
+  Process:=TProcess.Create(nil);
+  try
+    with Process do
+    begin
+      // grep -aoE $'\$G[A-Z]+RMC[A-Z\.,*0-9]+\n' samples/trendvision.data
+      Executable:='/bin/grep';
+
+      Parameters.Add('-aoE');
+      Parameters.Add('\$G[A-Z]+RMC[A-Z\.,*0-9]+');
+      Parameters.Add(FileName);
+
+      Options:=[poUsePipes];
+    end;
+
+    Process.Execute;
+
+    OutputStream:=TFileStream.Create(OutputFileName, fmCreate);
+    try
+      repeat
+        Buffer[0]:=0;
+        BytesRead:=Process.Output.Read(Buffer, BUF_SIZE);
+        OutputStream.Write(Buffer, BytesRead);
+      until BytesRead = 0;
+    finally
+      OutputStream.Free;
+    end;
+  finally
+    Process.Free;
+  end;
+end;
+
+{ TPlayerTrackParser }
+
+constructor TPlayerTrackParser.Create(const AFileName, AOutputFileName: String);
+begin
+  inherited Create;
+  FFileName:=AFileName;
+  FOutputFileName:=AOutputFileName;
+end;
 
 { TPlayerSubtitleMP4BoxExtractor }
 

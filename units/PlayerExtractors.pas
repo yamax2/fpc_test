@@ -65,8 +65,11 @@ type
   TPlayerExtractorThread = class(TPlayerThread)
   private
     FIndex: Integer;
+    FDataFile, FTrackFile: String;
     function GetExtractor: TPlayerInfoExtractor;
     function GetManager: TPlayerExtractorManager;
+    procedure ExtractTrack;
+    procedure ParseTrack;
   protected
     procedure Execute; override;
   public
@@ -85,24 +88,41 @@ begin
   Result:=inherited Manager as TPlayerExtractorManager;
 end;
 
+procedure TPlayerExtractorThread.ExtractTrack;
+var
+  Service: TPlayerSubtitleExtractor;
+begin
+  FDataFile:=Format('%ssubtitles_%d.data', [Extractor.TempDir, FIndex]);
+  Service:=Extractor.GetSubtileExtractorType.Create(Extractor[FIndex], FDataFile);
+  try
+    Service.Extract;
+  finally
+    Service.Free;
+  end;
+end;
+
+procedure TPlayerExtractorThread.ParseTrack;
+var
+  Service: TPlayerTrackParser;
+begin
+  FTrackFile:=Format('%strack_%d.data', [Extractor.TempDir, FIndex]);
+  Service:=TPlayerNmeaTrackParser.Create(FDataFile, FTrackFile);
+  try
+    Service.Parse;
+  finally
+    Service.Free;
+  end;
+end;
+
 function TPlayerExtractorThread.GetExtractor: TPlayerInfoExtractor;
 begin
   Result:=Manager.Extractor;
 end;
 
 procedure TPlayerExtractorThread.Execute;
-var
-  Service: TPlayerSubtitleExtractor;
 begin
-  Service:=Extractor.GetSubtileExtractorType.Create(
-    Extractor[FIndex],
-    Format('%ssubtitles_%d.data', [Extractor.TempDir, FIndex])
-  );
-  try
-    Service.Extract;
-  finally
-    Service.Free;
-  end;
+  ExtractTrack;
+  ParseTrack;
 end;
 
 constructor TPlayerExtractorThread.Create(AManager: TPlayerExtractorManager;

@@ -8,78 +8,77 @@
         <Filename Value="test.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Test"/>
-        <CursorPos X="17" Y="14"/>
-        <UsageCount Value="41"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="6" Y="26"/>
+        <UsageCount Value="45"/>
       </Unit0>
       <Unit1>
         <Filename Value="units/PlayerExtractors.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="7"/>
-        <CursorPos X="32" Y="26"/>
-        <UsageCount Value="27"/>
-        <Bookmarks Count="1">
-          <Item0 X="45" Y="99" ID="1"/>
-        </Bookmarks>
+        <TopLine Value="183"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="units/PlayerThreads.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="72"/>
-        <CursorPos X="10" Y="88"/>
-        <UsageCount Value="27"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="142"/>
+        <CursorPos X="44" Y="186"/>
+        <UsageCount Value="31"/>
+        <Bookmarks Count="1">
+          <Item0 X="8" Y="185" ID="1"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/inc/threadh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="133"/>
         <CursorPos X="18" Y="30"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="13"/>
       </Unit3>
       <Unit4>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/classes/classesh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1681"/>
         <CursorPos X="14" Y="1706"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit4>
       <Unit5>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/unix/tthread.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="253"/>
         <CursorPos X="3" Y="255"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit5>
       <Unit6>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/classes/lists.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="978"/>
         <CursorPos X="24" Y="1009"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit6>
       <Unit7>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/inc/objpash.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="177"/>
         <CursorPos X="21" Y="220"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit7>
       <Unit8>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/linux/sysosh.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="24"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit8>
       <Unit9>
         <Filename Value="playerthreads.pas"/>
         <UnitName Value="PlayerThreads"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="11"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="21"/>
         <Bookmarks Count="1">
           <Item0 Y="76" ID="1"/>
         </Bookmarks>
@@ -90,33 +89,34 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="110"/>
         <CursorPos X="15" Y="143"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit10>
       <Unit11>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/inc/thread.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="82"/>
         <CursorPos X="25" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit11>
       <Unit12>
         <Filename Value="playerextractors.pas"/>
         <UnitName Value="PlayerExtractors"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="10" Y="11"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="19"/>
       </Unit12>
       <Unit13>
         <Filename Value="PlayerThreads.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="46"/>
         <CursorPos X="24" Y="58"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit13>
       <Unit14>
         <Filename Value="/usr/share/fpcsrc/3.0.2/packages/fcl-process/src/process.pp"/>
         <EditorIndex Value="-1"/>
-        <CursorPos X="48" Y="24"/>
+        <TopLine Value="92"/>
+        <CursorPos X="22" Y="134"/>
         <UsageCount Value="10"/>
       </Unit14>
       <Unit15>
@@ -124,54 +124,54 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="206"/>
         <CursorPos X="28" Y="276"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit15>
       <Unit16>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/sysutils/syshelph.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="5"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit16>
       <Unit17>
         <Filename Value="/usr/lib/lazarus/1.8.0/components/lazutils/fileutil.pas"/>
         <UnitName Value="FileUtil"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="23" Y="19"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit17>
       <Unit18>
         <Filename Value="/usr/lib/lazarus/1.8.0/components/lazutils/fileutil.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1019"/>
         <CursorPos X="3" Y="1024"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit18>
       <Unit19>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/sysutils/filutilh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="108"/>
         <CursorPos X="30" Y="128"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit19>
       <Unit20>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/sysutils/diskh.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="10" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit20>
       <Unit21>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/inc/systemh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="732"/>
         <CursorPos X="11" Y="757"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit21>
       <Unit22>
         <Filename Value="/usr/share/fpcsrc/3.0.2/packages/fcl-process/src/unix/process.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="307"/>
         <CursorPos X="3" Y="320"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit22>
       <Unit23>
         <Filename Value="units/playersubtitleextractors.pas"/>
@@ -180,137 +180,125 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="23"/>
         <CursorPos X="28" Y="35"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit23>
       <Unit24>
         <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <EditorIndex Value="2"/>
-        <CursorPos X="33" Y="36"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="49" Y="104"/>
+        <UsageCount Value="12"/>
       </Unit24>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="28" HistoryIndex="27">
       <Position1>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="76" Column="27" TopLine="44"/>
+        <Caret Line="71" Column="15" TopLine="46"/>
       </Position1>
       <Position2>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="77" Column="29" TopLine="44"/>
+        <Caret Line="82" Column="56" TopLine="64"/>
       </Position2>
       <Position3>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="79" Column="27" TopLine="44"/>
       </Position3>
       <Position4>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="93" Column="27" TopLine="51"/>
+        <Caret Line="32" Column="37"/>
       </Position4>
       <Position5>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="88" Column="14" TopLine="61"/>
+        <Caret Line="96" Column="45" TopLine="72"/>
       </Position5>
       <Position6>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="34" Column="22"/>
+        <Caret Line="175" Column="54" TopLine="133"/>
       </Position6>
       <Position7>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="93" Column="27" TopLine="70"/>
+        <Caret Line="118" Column="6" TopLine="69"/>
       </Position7>
       <Position8>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="98" Column="23" TopLine="70"/>
       </Position8>
       <Position9>
-        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <Caret Line="52" Column="46" TopLine="27"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="32" Column="37"/>
       </Position9>
       <Position10>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="96" Column="22" TopLine="71"/>
+        <Caret Line="109" Column="12"/>
       </Position10>
       <Position11>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="98" Column="5" TopLine="74"/>
+        <Caret Line="74" Column="22" TopLine="37"/>
       </Position11>
       <Position12>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="99" Column="27" TopLine="75"/>
+        <Caret Line="125"/>
       </Position12>
       <Position13>
-        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <Caret Line="29" Column="9"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="36" Column="24" TopLine="7"/>
       </Position13>
       <Position14>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="104" Column="25" TopLine="75"/>
+        <Caret Line="74" Column="20" TopLine="42"/>
       </Position14>
       <Position15>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="105" Column="33" TopLine="78"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="28" Column="24" TopLine="23"/>
       </Position15>
       <Position16>
-        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <Caret Line="30" Column="25" TopLine="3"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="56" Column="27" TopLine="26"/>
       </Position16>
       <Position17>
-        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <Caret Line="40" Column="10" TopLine="21"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="36" Column="30" TopLine="10"/>
       </Position17>
       <Position18>
-        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <Caret Line="37" Column="33" TopLine="3"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="74" Column="22" TopLine="43"/>
       </Position18>
       <Position19>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="43" Column="114" TopLine="13"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="28" Column="30" TopLine="8"/>
       </Position19>
       <Position20>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="32" Column="112" TopLine="13"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="36" Column="39" TopLine="13"/>
       </Position20>
       <Position21>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="161" Column="35" TopLine="154"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="185" Column="8" TopLine="85"/>
       </Position21>
       <Position22>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="32" Column="69" TopLine="7"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="30" Column="25" TopLine="7"/>
       </Position22>
       <Position23>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="160" Column="5" TopLine="136"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="32" Column="24" TopLine="5"/>
       </Position23>
       <Position24>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="32" Column="14" TopLine="7"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="170" Column="11" TopLine="142"/>
       </Position24>
       <Position25>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="161" Column="5" TopLine="157"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="171" Column="25" TopLine="43"/>
       </Position25>
       <Position26>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="32" Column="68" TopLine="7"/>
+        <Filename Value="units/PlayerThreads.pas"/>
       </Position26>
       <Position27>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="71" Column="25" TopLine="40"/>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="99" Column="57" TopLine="57"/>
       </Position27>
       <Position28>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="99" Column="34" TopLine="95"/>
+        <Caret Line="107" Column="46" TopLine="165"/>
       </Position28>
-      <Position29>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="76" Column="14" TopLine="51"/>
-      </Position29>
-      <Position30>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="99" Column="21" TopLine="91"/>
-      </Position30>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>
