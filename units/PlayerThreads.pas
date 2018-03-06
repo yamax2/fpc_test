@@ -105,7 +105,7 @@ begin
        List.Add(NextThread);
        NextThread.Start;
      end;
-   until (NextThread = nil) or not (List.Count < GetMaxThreadCount);
+   until (NextThread = nil) or Terminated or not (List.Count < GetMaxThreadCount);
 
    if NextThread = nil then Interrupt;
  finally
@@ -175,7 +175,10 @@ begin
  try
    SetLength(Handles, List.Count);
    for Index:=0 to List.Count - 1 do
+   begin
      Handles[Index]:=TThread(List[Index]).Handle;
+     TThread(List[Index]).Terminate;
+   end;
  finally
    AList.UnlockList;
  end;
