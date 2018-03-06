@@ -30,7 +30,7 @@
         <PackageName Value="LazUtils"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="test.pas"/>
         <IsPartOfProject Value="True"/>
@@ -44,6 +44,11 @@
         <Filename Value="units/PlayerThreads.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="units/playersubtitleextractors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="PlayerSubtitleExtractors"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

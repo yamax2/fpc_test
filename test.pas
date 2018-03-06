@@ -12,10 +12,11 @@ uses
 {$endif}
   PlayerThreads in 'units/PlayerThreads',
   PlayerExtractors in 'units/PlayerExtractors',
+  PlayerSubtitleExtractors in 'units/PlayerSubtitleExtractors',
   Classes, SysUtils, FileUtil;
 
 const
-  VIDEO_DIR = '/win/video/2018_01a/16'; //'/win/video/2018_01a/zz14-04-01-2018';
+  VIDEO_DIR = '/win/video/2018_01a/zz14-04-01-2018';
 
 var
   Extractor: TPlayerInfoExtractor;

@@ -5,7 +5,7 @@ unit PlayerExtractors;
 interface
 
 uses
-  PlayerThreads, Classes, SysUtils, Fgl, Process;
+  PlayerThreads, Classes, SysUtils, Fgl, PlayerSubtitleExtractors;
 
 type
   TPlayerFileInfo = packed record
@@ -21,12 +21,15 @@ type
   private
     FList: TPlayerFileList;
     FSessionID: String;
+    FSubtileExtractorType: TSubtitleExtractorType;
     FTempDir: String;
     function GetCount: Integer;
     function GetFileInfo(const Index: Integer): TPlayerFileInfo;
     function GetFileInfoByName(const AFileName: String): TPlayerFileInfo;
     function GetFileName(const Index: Integer): String;
     procedure PrepareTempDir(const ATempDir: String);
+  protected
+    function GetSubtileExtractorType: TPlayerSubtitleExtractorClass; virtual;
   public
     constructor Create(AFileList: TStringList; const ATempDir: String);
     destructor Destroy; override;
@@ -39,6 +42,7 @@ type
     property FileInfoByName[AFileName: String]: TPlayerFileInfo read GetFileInfoByName;
 
     property SessionID: String read FSessionID;
+    property SubtileExtractorType: TSubtitleExtractorType read FSubtileExtractorType write FSubtileExtractorType;
     property TempDir: String read FTempDir;
   end;
 
@@ -88,33 +92,16 @@ end;
 
 procedure TPlayerExtractorThread.Execute;
 var
-  AProcess: TProcess;
+  Service: TPlayerSubtitleExtractor;
 begin
-  AProcess:=TProcess.Create(nil);
+  Service:=Extractor.GetSubtileExtractorType.Create(
+    Extractor[FIndex],
+    Format('%ssubtitles_%d.data', [Extractor.TempDir, FIndex])
+  );
   try
-    with AProcess do
-    begin
-      // ffmpeg -f concat -i mylist.txt -map 0:s:0 -c copy -f data out.data
-      Executable:='/usr/bin/ffmpeg';
-
-      Parameters.Add('-i');
-      Parameters.Add(Format('%s', [Extractor[FIndex]]));
-      Parameters.Add('-map');
-      Parameters.Add('0:s:0');
-      Parameters.Add('-c');
-      Parameters.Add('copy');
-      Parameters.Add('-f');
-      Parameters.Add('data');
-      Parameters.Add('-v');
-      Parameters.Add('quiet');
-      Parameters.Add(Format('%ssubtitles_%d.data', [Extractor.TempDir, FIndex]));
-
-      Options:=[poWaitOnExit, poUsePipes];
-    end;
-
-    AProcess.Execute;
+    Service.Extract;
   finally
-    AProcess.Free;
+    Service.Free;
   end;
 end;
 
@@ -165,6 +152,14 @@ begin
   ForceDirectories(FTempDir);
 end;
 
+function TPlayerInfoExtractor.GetSubtileExtractorType: TPlayerSubtitleExtractorClass;
+begin
+  case SubtileExtractorType of
+    seFFmpeg: Result:=TPlayerSubtitleFfmpegExtractor;
+    seMP4Box: Result:=TPlayerSubtitleMP4BoxExtractor;
+  end;
+end;
+
 constructor TPlayerInfoExtractor.Create(AFileList: TStringList;
   const ATempDir: String);
 var
@@ -172,6 +167,7 @@ var
   FileItemData: TPlayerFileInfo;
 begin
   inherited Create;
+  FSubtileExtractorType:=seFFmpeg;
   PrepareTempDir(ATempDir);
 
   FList:=TPlayerFileList.Create;
