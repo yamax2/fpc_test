@@ -5,7 +5,11 @@ unit PlayerExtractors;
 interface
 
 uses
-  PlayerThreads, Classes, SysUtils, Fgl, PlayerSubtitleExtractors;
+{$ifdef unix}
+  cthreads,
+  cmem,
+{$endif}
+  Classes, SysUtils, Fgl, PlayerThreads, PlayerSubtitleExtractors;
 
 type
   TPlayerFileInfo = packed record
@@ -52,10 +56,12 @@ type
   private
     FExtractor: TPlayerInfoExtractor;
     FCount: Integer;
+    FCriticalSection: TRTLCriticalSection;
   protected
     function GetNextThread: TPlayerThread; override;
   public
     constructor Create(AExtractor: TPlayerInfoExtractor);
+    destructor Destroy; override;
 
     property Extractor: TPlayerInfoExtractor read FExtractor;
   end;
@@ -120,9 +126,22 @@ begin
 end;
 
 procedure TPlayerExtractorThread.Execute;
+var
+  Info: TPlayerFileInfo;
 begin
-  ExtractTrack;
-  ParseTrack;
+  if not Terminated then ExtractTrack;
+  if not Terminated then
+  begin
+    ParseTrack;
+    EnterCriticalsection(Manager.FCriticalSection);
+    try
+      Info:=Extractor.FileInfo[FIndex];
+      Info.TrackFile:=FTrackFile;
+      Extractor.FList.Data[FIndex]:=Info;
+    finally
+      LeaveCriticalsection(Manager.FCriticalSection);
+    end;
+  end;
 end;
 
 constructor TPlayerExtractorThread.Create(AManager: TPlayerExtractorManager;
@@ -147,7 +166,14 @@ constructor TPlayerExtractorManager.Create(AExtractor: TPlayerInfoExtractor);
 begin
   FExtractor:=AExtractor;
   FCount:=0;
+  InitCriticalSection(FCriticalSection);
   inherited Create;
+end;
+
+destructor TPlayerExtractorManager.Destroy;
+begin
+  DoneCriticalsection(FCriticalSection);
+  inherited;
 end;
 
 { TPlayerInfoExtractor }

@@ -45,9 +45,8 @@
         <IsPartOfProject Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="units/playersubtitleextractors.pas"/>
+        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="PlayerSubtitleExtractors"/>
       </Unit3>
     </Units>
   </ProjectOptions>

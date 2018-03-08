@@ -23,6 +23,8 @@ const
 var
   Extractor: TPlayerInfoExtractor;
   Files: TStringList;
+
+  Index: Integer;
 begin
   Files:=TStringList.Create;
   try
@@ -30,6 +32,9 @@ begin
     Extractor:=TPlayerInfoExtractor.Create(Files, './tmp');
     try
       Extractor.LoadData.WaitFor;
+
+      for Index:=0 to Extractor.Count - 1 do
+        WriteLn(Extractor[Index], ': ', Extractor.FileInfo[Index].TrackFile);
     finally
       Extractor.Free;
     end;

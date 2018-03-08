@@ -20,6 +20,7 @@ type
   private
     FEvent: pRTLEvent;
     FList: TThreadList;
+    FForceTerminated: Boolean;
     class var FManagers: TThreadList;
   protected
     procedure Execute; override;
@@ -29,11 +30,11 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Interrupt;
+    procedure Interrupt(const Force: Boolean = False);
 
     class constructor ClassCreate;
     class destructor ClassDestroy;
-    class procedure WaitForThreadList(AList: TThreadList);
+    class procedure WaitForThreadList(AList: TThreadList; const AForceTerminate: Boolean = False);
 
     property MaxThreadCount: Integer read GetMaxThreadCount;
   end;
@@ -75,7 +76,7 @@ begin
  Process;
  RtlEventWaitFor(FEvent);
  Terminate;
- WaitForThreadList(FList);
+ WaitForThreadList(FList, FForceTerminated);
 end;
 
 function TPlayerThreadManager.GetNextThread: TPlayerThread;
@@ -127,6 +128,7 @@ begin
     FManagers.UnlockList;
   end;
 
+  FForceTerminated:=False;
   inherited Create(False);
   FreeOnTerminate:=True;
 end;
@@ -148,8 +150,9 @@ begin
   inherited;
 end;
 
-procedure TPlayerThreadManager.Interrupt;
+procedure TPlayerThreadManager.Interrupt(const Force: Boolean);
 begin
+  FForceTerminated:=Force;
   Terminate;
   RtlEventSetEvent(FEvent);
 end;
@@ -165,7 +168,8 @@ begin
   FManagers.Free;
 end;
 
-class procedure TPlayerThreadManager.WaitForThreadList(AList: TThreadList);
+class procedure TPlayerThreadManager.WaitForThreadList(AList: TThreadList;
+  const AForceTerminate: Boolean);
 var
   List: TList;
   Handles: array of TThreadID;
@@ -175,7 +179,11 @@ begin
  try
    SetLength(Handles, List.Count);
    for Index:=0 to List.Count - 1 do
+   begin
      Handles[Index]:=TThread(List[Index]).Handle;
+     if AForceTerminate then
+       TThread(List[Index]).Terminate;
+   end;
  finally
    AList.UnlockList;
  end;
