@@ -9,7 +9,7 @@ uses
   cthreads,
   cmem,
 {$endif}
-  Classes, SysUtils;
+  Classes, SysUtils, CpuCount;
 
 type
   TPlayerThread = class;
@@ -21,6 +21,7 @@ type
     FEvent: pRTLEvent;
     FList: TThreadList;
     FForceTerminated: Boolean;
+    FMaxThreadCount: Integer;
     class var FManagers: TThreadList;
   protected
     procedure Execute; override;
@@ -36,7 +37,7 @@ type
     class destructor ClassDestroy;
     class procedure WaitForThreadList(AList: TThreadList; const AForceTerminate: Boolean = False);
 
-    property MaxThreadCount: Integer read GetMaxThreadCount;
+    property MaxThreadCount: Integer read FMaxThreadCount;
   end;
 
   { TPlayerThread }
@@ -86,7 +87,7 @@ end;
 
 function TPlayerThreadManager.GetMaxThreadCount: Integer;
 begin
- Result:=8;
+ Result:=GetLogicalCpuCount;
 end;
 
 procedure TPlayerThreadManager.Process(AFinishedThread: TPlayerThread);
@@ -97,7 +98,7 @@ begin
  List:=FList.LockList;
  try
    if AFinishedThread <> nil then List.Remove(AFinishedThread);
-   if not (List.Count < GetMaxThreadCount) or Terminated then Exit;
+   if not (List.Count < MaxThreadCount) or Terminated then Exit;
 
    repeat
      NextThread:=GetNextThread;
@@ -106,7 +107,7 @@ begin
        List.Add(NextThread);
        NextThread.Start;
      end;
-   until (NextThread = nil) or Terminated or not (List.Count < GetMaxThreadCount);
+   until (NextThread = nil) or Terminated or not (List.Count < MaxThreadCount);
 
    if NextThread = nil then Interrupt;
  finally
@@ -118,6 +119,7 @@ constructor TPlayerThreadManager.Create;
 var
   List: TList;
 begin
+  FMaxThreadCount:=GetMaxThreadCount;
   FList:=TThreadList.Create;
   FEvent:=RTLEventCreate;
 

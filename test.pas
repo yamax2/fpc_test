@@ -10,6 +10,7 @@ uses
 {$ifdef debug}
   HeapTrc,
 {$endif}
+  CpuCount in 'units/CpuCount',
   PlayerThreads in 'units/PlayerThreads',
   PlayerExtractors in 'units/PlayerExtractors',
   PlayerSubtitleExtractors in 'units/PlayerSubtitleExtractors',
