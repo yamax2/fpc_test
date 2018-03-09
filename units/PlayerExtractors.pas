@@ -11,6 +11,9 @@ uses
 {$endif}
   Classes, SysUtils, Fgl, PlayerThreads, PlayerSubtitleExtractors;
 
+const
+  PLAYER_DATE_FORMAT = 'YYYY-MM-DD HH:MM:SS';
+
 type
   TPlayerFileInfo = packed record
     TrackFile: String;
@@ -25,6 +28,7 @@ type
   TPlayerInfoExtractor = class
   private
     FList: TPlayerFileList;
+    FLoaded: Boolean;
     FSessionID: String;
     FSubtileExtractorType: TSubtitleExtractorType;
     FTempDir: String;
@@ -51,6 +55,7 @@ type
      read GetFileInfoByName;
 
     property Crc32: String read FCrc32;
+    property Loaded: Boolean read FLoaded;
     property SessionID: String read FSessionID;
     property SubtileExtractorType: TSubtitleExtractorType
      read FSubtileExtractorType write FSubtileExtractorType;
@@ -91,9 +96,6 @@ type
     property Extractor: TPlayerInfoExtractor read GetExtractor;
     property Manager: TPlayerExtractorManager read GetManager;
   end;
-
-const
-  PLAYER_DATE_FORMAT = 'YYYY-MM-DD HH:MM:SS';
 
 implementation
 
@@ -185,6 +187,7 @@ end;
 
 destructor TPlayerExtractorManager.Destroy;
 begin
+  Extractor.FLoaded:=True;
   DoneCriticalsection(FCriticalSection);
   inherited;
 end;
@@ -229,6 +232,7 @@ var
   FileItemData: TPlayerFileInfo;
 begin
   inherited Create;
+  FLoaded:=False;
   FSubtileExtractorType:=seFFmpeg;
 
   FList:=TPlayerFileList.Create;
@@ -301,6 +305,12 @@ end;
 
 function TPlayerInfoExtractor.LoadData: TThread;
 begin
+  if Loaded then
+  begin
+    Exit;
+    Result:=nil;
+  end;
+
   Result:=TPlayerExtractorManager.Create(Self);
 end;
 

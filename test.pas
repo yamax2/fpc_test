@@ -1,14 +1,10 @@
 program Test;
 {$MODE OBJFPC}{$H+}
-{$define debug}
 
 uses
 {$ifdef unix}
   cthreads,
   cmem,
-{$endif}
-{$ifdef debug}
-  HeapTrc,
 {$endif}
   CpuCount in 'units/CpuCount',
   PlayerThreads in 'units/PlayerThreads',

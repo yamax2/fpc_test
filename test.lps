@@ -2,26 +2,61 @@
 <CONFIG>
   <ProjectSession>
     <Version Value="10"/>
-    <BuildModes Active="Default"/>
+    <BuildModes Count="1" Active="Debug">
+      <Item1 Name="Debug">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <Target>
+            <Filename Value="test"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+              <UseHeaptrc Value="True"/>
+              <TrashVariables Value="True"/>
+              <UseExternalDbgSyms Value="True"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item1>
+    </BuildModes>
     <Units Count="30">
       <Unit0>
         <Filename Value="test.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Test"/>
-        <IsVisibleTab Value="True"/>
-        <CursorPos X="116" Y="38"/>
-        <UsageCount Value="96"/>
+        <CursorPos X="34" Y="23"/>
+        <UsageCount Value="97"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="units/PlayerExtractors.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="248"/>
-        <CursorPos X="72" Y="269"/>
-        <UsageCount Value="82"/>
+        <TopLine Value="188"/>
+        <CursorPos X="26" Y="190"/>
+        <UsageCount Value="83"/>
         <Bookmarks Count="1">
-          <Item0 X="5" Y="273" ID="1"/>
+          <Item0 X="12" Y="190" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit1>
@@ -30,7 +65,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="7" Y="39"/>
-        <UsageCount Value="82"/>
+        <UsageCount Value="83"/>
         <Bookmarks Count="1">
           <Item0 X="10" Y="90" ID="1"/>
         </Bookmarks>
@@ -41,14 +76,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="64"/>
         <CursorPos X="49" Y="85"/>
-        <UsageCount Value="71"/>
+        <UsageCount Value="72"/>
       </Unit3>
       <Unit4>
         <Filename Value="units/CpuCount.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="10" Y="7"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="53"/>
       </Unit4>
       <Unit5>
         <Filename Value="units/playersubtitleextractors.pas"/>
@@ -225,123 +260,125 @@
         <UsageCount Value="10"/>
       </Unit29>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="234" Column="20" TopLine="209"/>
+        <Filename Value="test.pas"/>
+        <Caret Line="32" Column="3"/>
       </Position1>
       <Position2>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="40" Column="20" TopLine="24"/>
+        <Caret Line="32" Column="17" TopLine="22"/>
       </Position2>
       <Position3>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="242" Column="30" TopLine="219"/>
+        <Caret Line="96" Column="21" TopLine="65"/>
       </Position3>
       <Position4>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="31" Column="35" TopLine="15"/>
+        <Caret Line="266" Column="69" TopLine="241"/>
       </Position4>
       <Position5>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="37" TopLine="18"/>
+        <Caret Line="269" Column="13" TopLine="241"/>
       </Position5>
       <Position6>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="199" Column="6" TopLine="196"/>
+        <Caret Line="101" Column="16" TopLine="73"/>
       </Position6>
       <Position7>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="32" Column="15" TopLine="12"/>
+        <Caret Line="269" Column="23" TopLine="244"/>
       </Position7>
       <Position8>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="251" Column="21" TopLine="233"/>
+        <Filename Value="test.pas"/>
+        <Caret Line="31" Column="8"/>
       </Position8>
       <Position9>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="32" Column="14" TopLine="7"/>
+        <Caret Line="257" Column="3" TopLine="244"/>
       </Position9>
       <Position10>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="257" Column="9" TopLine="235"/>
+        <Caret Line="273" Column="12" TopLine="244"/>
       </Position10>
       <Position11>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="14"/>
+        <Caret Line="257" Column="25" TopLine="246"/>
       </Position11>
       <Position12>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="261" Column="75" TopLine="232"/>
+        <Caret Line="271" Column="5" TopLine="246"/>
       </Position12>
       <Position13>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="253" Column="76" TopLine="236"/>
+        <Filename Value="test.pas"/>
+        <Caret Line="31" Column="32"/>
       </Position13>
       <Position14>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="15" Column="18"/>
+        <Caret Line="277" Column="42" TopLine="248"/>
       </Position14>
       <Position15>
-        <Filename Value="test.pas"/>
-        <Caret Line="32" Column="3"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="270" Column="21" TopLine="248"/>
       </Position15>
       <Position16>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="32" Column="17" TopLine="22"/>
+        <Caret Line="267" Column="64" TopLine="241"/>
       </Position16>
       <Position17>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="96" Column="21" TopLine="65"/>
+        <Caret Line="93" Column="7" TopLine="67"/>
       </Position17>
       <Position18>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="266" Column="69" TopLine="241"/>
+        <Caret Line="16"/>
       </Position18>
       <Position19>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="269" Column="13" TopLine="241"/>
       </Position19>
       <Position20>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="101" Column="16" TopLine="73"/>
+        <Caret Line="308" TopLine="259"/>
       </Position20>
       <Position21>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="269" Column="23" TopLine="244"/>
       </Position21>
       <Position22>
-        <Filename Value="test.pas"/>
-        <Caret Line="31" Column="8"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="308" TopLine="259"/>
       </Position22>
       <Position23>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="257" Column="3" TopLine="244"/>
+        <Filename Value="test.pas"/>
+        <Caret Line="3" Column="2"/>
       </Position23>
       <Position24>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="273" Column="12" TopLine="244"/>
+        <Filename Value="test.pas"/>
+        <Caret Line="10"/>
       </Position24>
       <Position25>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="257" Column="25" TopLine="246"/>
+        <Caret Line="58" Column="43" TopLine="28"/>
       </Position25>
       <Position26>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="271" Column="5" TopLine="246"/>
+        <Caret Line="46" Column="41" TopLine="28"/>
       </Position26>
       <Position27>
-        <Filename Value="test.pas"/>
-        <Caret Line="31" Column="32"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="234" Column="18" TopLine="227"/>
       </Position27>
       <Position28>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="277" Column="42" TopLine="248"/>
+        <Caret Line="76" Column="19" TopLine="36"/>
       </Position28>
       <Position29>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="270" Column="21" TopLine="248"/>
+        <Caret Line="190" Column="12" TopLine="188"/>
       </Position29>
+      <Position30>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="76" Column="16" TopLine="51"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>
