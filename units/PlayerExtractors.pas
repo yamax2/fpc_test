@@ -14,6 +14,7 @@ uses
 type
   TPlayerFileInfo = packed record
     TrackFile: String;
+    Size: Int64;
     CreatedAt: TDateTime;
   end;
 
@@ -27,10 +28,13 @@ type
     FSessionID: String;
     FSubtileExtractorType: TSubtitleExtractorType;
     FTempDir: String;
+    FCrc32: String;
+    function FindSession: Boolean;
     function GetCount: Integer;
     function GetFileInfo(const Index: Integer): TPlayerFileInfo;
     function GetFileInfoByName(const AFileName: String): TPlayerFileInfo;
     function GetFileName(const Index: Integer): String;
+    procedure PrepareSession;
     procedure PrepareTempDir(const ATempDir: String);
   protected
     function GetSubtileExtractorType: TPlayerSubtitleExtractorClass; virtual;
@@ -43,10 +47,13 @@ type
     property Count: Integer read GetCount;
     property FileName[Index: Integer]: String read GetFileName; default;
     property FileInfo[Index: Integer]: TPlayerFileInfo read GetFileInfo;
-    property FileInfoByName[AFileName: String]: TPlayerFileInfo read GetFileInfoByName;
+    property FileInfoByName[AFileName: String]: TPlayerFileInfo
+     read GetFileInfoByName;
 
+    property Crc32: String read FCrc32;
     property SessionID: String read FSessionID;
-    property SubtileExtractorType: TSubtitleExtractorType read FSubtileExtractorType write FSubtileExtractorType;
+    property SubtileExtractorType: TSubtitleExtractorType
+     read FSubtileExtractorType write FSubtileExtractorType;
     property TempDir: String read FTempDir;
   end;
 
@@ -85,7 +92,13 @@ type
     property Manager: TPlayerExtractorManager read GetManager;
   end;
 
+const
+  PLAYER_DATE_FORMAT = 'YYYY-MM-DD HH:MM:SS';
+
 implementation
+
+uses
+  FileUtil, crc;
 
 { TPlayerExtractorThread }
 
@@ -183,7 +196,7 @@ begin
   Result:=FList.Keys[Index];
 end;
 
-procedure TPlayerInfoExtractor.PrepareTempDir(const ATempDir: String);
+procedure TPlayerInfoExtractor.PrepareSession;
 var
   Guid: TGUID;
 begin
@@ -192,7 +205,10 @@ begin
   FSessionID:=LowerCase(GUIDToString(Guid));
   Delete(FSessionID, 1, 1);
   Delete(FSessionID, Length(FSessionID), 1);
+end;
 
+procedure TPlayerInfoExtractor.PrepareTempDir(const ATempDir: String);
+begin
   FTempDir:=IncludeTrailingPathDelimiter(ATempDir) + FSessionID;
   FTempDir:=IncludeTrailingPathDelimiter(FTempDir);
   ForceDirectories(FTempDir);
@@ -214,7 +230,6 @@ var
 begin
   inherited Create;
   FSubtileExtractorType:=seFFmpeg;
-  PrepareTempDir(ATempDir);
 
   FList:=TPlayerFileList.Create;
   for FileItemName in AFileList do
@@ -222,9 +237,44 @@ begin
     begin
       FileAge(FileItemName, FileItemData.CreatedAt);
       FileItemData.TrackFile:='';
+      FileItemData.Size:=FileUtil.FileSize(FileItemName);
 
       FList.Add(FileItemName, FileItemData);
     end;
+
+  if not FindSession then
+  begin
+    PrepareSession;
+    PrepareTempDir(ATempDir);
+  end;
+end;
+
+function TPlayerInfoExtractor.FindSession: Boolean;
+var
+  List: TStringList;
+  Index: Integer;
+  Info: TPlayerFileInfo;
+  CrcValue: Cardinal;
+begin
+  Result:=False;
+
+  List:=TStringList.Create;
+  try
+    for Index:=0 to Count - 1 do
+    begin
+      Info:=Self.FileInfo[Index];
+      List.Add(Format('%s,%d,%s',
+        [Self[Index], Info.Size, FormatDateTime(PLAYER_DATE_FORMAT, Info.CreatedAt)]));
+    end;
+
+    List.Sort;
+
+    CrcValue:=0;
+    CrcValue:=crc.crc32(CrcValue, PByte(List.Text), Length(List.Text));
+    FCrc32:=IntToHex(CrcValue, 8);
+  finally
+    List.Free;
+  end;
 end;
 
 function TPlayerInfoExtractor.GetCount: Integer;

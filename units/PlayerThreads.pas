@@ -35,7 +35,8 @@ type
 
     class constructor ClassCreate;
     class destructor ClassDestroy;
-    class procedure WaitForThreadList(AList: TThreadList; const AForceTerminate: Boolean = False);
+    class procedure WaitForThreadList(AList: TThreadList;
+      const AForceTerminate: Boolean = False);
 
     property MaxThreadCount: Integer read FMaxThreadCount;
   end;

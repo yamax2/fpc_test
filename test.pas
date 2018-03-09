@@ -14,7 +14,7 @@ uses
   PlayerThreads in 'units/PlayerThreads',
   PlayerExtractors in 'units/PlayerExtractors',
   PlayerSubtitleExtractors in 'units/PlayerSubtitleExtractors',
-  Classes, SysUtils, FileUtil, Process;
+  Classes, SysUtils, FileUtil, Process, crc;
 
 const
   VIDEO_DIR = '/win/video/2018_01a/zz01-02-01-2018/01';
@@ -35,7 +35,7 @@ begin
       Extractor.LoadData.WaitFor;
 
       for Index:=0 to Extractor.Count - 1 do
-        WriteLn(Extractor[Index], ': ', Extractor.FileInfo[Index].TrackFile);
+        WriteLn(Extractor[Index], ': ', Extractor.FileInfo[Index].TrackFile, ', ', Extractor.FileInfo[Index].Size);
     finally
       Extractor.Free;
     end;
