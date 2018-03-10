@@ -9,7 +9,8 @@ uses
   cthreads,
   cmem,
 {$endif}
-  Classes, SysUtils, Fgl, PlayerThreads, PlayerSubtitleExtractors;
+  Classes, SysUtils, Fgl, PlayerThreads, PlayerSubtitleExtractors,
+  PlayerSessionStorage;
 
 const
   PLAYER_DATE_FORMAT = 'YYYY-MM-DD HH:MM:SS';
@@ -33,6 +34,7 @@ type
     FSubtileExtractorType: TSubtitleExtractorType;
     FTempDir: String;
     FCrc32: String;
+    FStorage: TPlayerSessionStorage;
     function FindSession: Boolean;
     function GetCount: Integer;
     function GetFileInfo(const Index: Integer): TPlayerFileInfo;
@@ -208,13 +210,16 @@ begin
   FSessionID:=LowerCase(GUIDToString(Guid));
   Delete(FSessionID, 1, 1);
   Delete(FSessionID, Length(FSessionID), 1);
+
+  FTempDir:=IncludeTrailingPathDelimiter(FTempDir + FSessionID);
+  ForceDirectories(FTempDir);
 end;
 
 procedure TPlayerInfoExtractor.PrepareTempDir(const ATempDir: String);
 begin
-  FTempDir:=IncludeTrailingPathDelimiter(ATempDir) + FSessionID;
-  FTempDir:=IncludeTrailingPathDelimiter(FTempDir);
+  FTempDir:=IncludeTrailingPathDelimiter(ATempDir);
   ForceDirectories(FTempDir);
+  FStorage:=TPlayerSessionStorage.Create(FTempDir + 'player.db');
 end;
 
 function TPlayerInfoExtractor.GetSubtileExtractorType: TPlayerSubtitleExtractorClass;
@@ -246,11 +251,8 @@ begin
       FList.Add(FileItemName, FileItemData);
     end;
 
-  if not FindSession then
-  begin
-    PrepareSession;
-    PrepareTempDir(ATempDir);
-  end;
+  PrepareTempDir(ATempDir);
+  if not FindSession then PrepareSession;
 end;
 
 function TPlayerInfoExtractor.FindSession: Boolean;
@@ -260,8 +262,6 @@ var
   Info: TPlayerFileInfo;
   CrcValue: Cardinal;
 begin
-  Result:=False;
-
   List:=TStringList.Create;
   try
     for Index:=0 to Count - 1 do
@@ -275,7 +275,11 @@ begin
 
     CrcValue:=0;
     CrcValue:=crc.crc32(CrcValue, PByte(List.Text), Length(List.Text));
+
     FCrc32:=IntToHex(CrcValue, 8);
+    FSessionID:=FStorage.FindSession(FCrc32, FList.Count);
+
+    Result:=FSessionID <> '';
   finally
     List.Free;
   end;
@@ -299,6 +303,7 @@ end;
 
 destructor TPlayerInfoExtractor.Destroy;
 begin
+  FStorage.Free;
   FList.Free;
   inherited;
 end;

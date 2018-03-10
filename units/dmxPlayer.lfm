@@ -1,0 +1,57 @@
+object dmPlayer: TdmPlayer
+  OldCreateOrder = False
+  Height = 337
+  HorizontalOffset = 763
+  VerticalOffset = 600
+  Width = 337
+  object Connection: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    Transaction = Transaction
+    Options = []
+    left = 32
+    top = 8
+  end
+  object Transaction: TSQLTransaction
+    Active = False
+    Database = Connection
+    Options = []
+    left = 112
+    top = 8
+  end
+  object Script: TSQLScript
+    DataBase = Connection
+    Transaction = Transaction
+    UseDollarString = False
+    Directives.Strings = (
+      'SET TERM'
+      'COMMIT WORK'
+      'COMMIT RETAIN'
+      'COMMIT'
+      '#IFDEF'
+      '#IFNDEF'
+      '#ELSE'
+      '#ENDIF'
+      '#DEFINE'
+      '#UNDEF'
+      '#UNDEFINE'
+    )
+    Terminator = ';'
+    CommentsinSQL = True
+    UseSetTerm = True
+    UseCommit = True
+    UseDefines = True
+    left = 32
+    top = 80
+  end
+  object Query: TSQLQuery
+    FieldDefs = <>
+    Database = Connection
+    Transaction = Transaction
+    Options = []
+    Params = <>
+    left = 112
+    top = 80
+  end
+end

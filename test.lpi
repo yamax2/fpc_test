@@ -49,12 +49,15 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LazUtils"/>
+        <PackageName Value="FCL"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LazUtils"/>
+      </Item2>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="8">
       <Unit0>
         <Filename Value="test.pas"/>
         <IsPartOfProject Value="True"/>
@@ -76,6 +79,21 @@
         <Filename Value="units/CpuCount.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="units/PlayerSessionStorage.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="units/PlayerLogger.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="units/dmxPlayer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="dmPlayer"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

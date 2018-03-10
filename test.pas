@@ -10,6 +10,9 @@ uses
   PlayerThreads in 'units/PlayerThreads',
   PlayerExtractors in 'units/PlayerExtractors',
   PlayerSubtitleExtractors in 'units/PlayerSubtitleExtractors',
+  dmxPlayer in 'units/dmxPlayer',
+  PlayerLogger in 'units/PlayerLogger',
+  PlayerSessionStorage in 'units/PlayerSessionStorage',
   Classes, SysUtils, FileUtil, Process, crc;
 
 const
