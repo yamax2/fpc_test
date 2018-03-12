@@ -42,6 +42,7 @@ type
     function GetFileName(const Index: Integer): String;
     procedure PrepareSession;
     procedure PrepareTempDir(const ATempDir: String);
+    procedure SaveSession;
   protected
     function GetSubtileExtractorType: TPlayerSubtitleExtractorClass; virtual;
   public
@@ -222,6 +223,18 @@ begin
   FStorage:=TPlayerSessionStorage.Create(FTempDir + 'player.db');
 end;
 
+procedure TPlayerInfoExtractor.SaveSession;
+var
+  Files: TStringArray;
+  Index: Integer;
+begin
+  SetLength(Files, Count);
+  for Index:=0 to Count - 1 do
+   Files[Index]:=Self[Index];
+
+  FStorage.AddSession(FSessionID, FCrc32, Files);
+end;
+
 function TPlayerInfoExtractor.GetSubtileExtractorType: TPlayerSubtitleExtractorClass;
 begin
   case SubtileExtractorType of
@@ -252,7 +265,7 @@ begin
     end;
 
   PrepareTempDir(ATempDir);
-  if not FindSession then PrepareSession;
+  if not FindSession then PrepareSession else FLoaded:=True;
 end;
 
 function TPlayerInfoExtractor.FindSession: Boolean;
@@ -310,13 +323,13 @@ end;
 
 function TPlayerInfoExtractor.LoadData: TThread;
 begin
-  if Loaded then
-  begin
-    Exit;
-    Result:=nil;
-  end;
+  Result:=nil;
 
-  Result:=TPlayerExtractorManager.Create(Self);
+  if not Loaded then
+  begin
+    SaveSession;
+    Result:=TPlayerExtractorManager.Create(Self);
+  end;
 end;
 
 end.
