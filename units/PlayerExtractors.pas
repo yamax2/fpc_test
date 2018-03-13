@@ -126,7 +126,12 @@ end;
 procedure TPlayerExtractorThread.SavePoints(Sender: TPlayerTrackParser;
   Points: TPlayerPointArray);
 begin
-  Extractor.FStorage.AddPoints(Extractor.SessionID, FIndex, Points);
+  EnterCriticalsection(Manager.FCriticalSection);
+  try
+    Extractor.FStorage.AddPoints(Extractor.SessionID, FIndex, Points);
+  finally
+    LeaveCriticalsection(Manager.FCriticalSection);
+  end;
 end;
 
 function TPlayerExtractorThread.GetExtractor: TPlayerInfoExtractor;
