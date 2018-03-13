@@ -5,23 +5,21 @@ unit PlayerSubtitleExtractors;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, PlayerThreads;
 
 type
-  TSubtitleExtractorType = (seFFmpeg, seMP4Box);
   TPlayerSubtitleExtractorClass = class of TPlayerSubtitleExtractor;
 
   { TPlayerSubtitleExtractor }
 
-  TPlayerSubtitleExtractor = class
+  TPlayerSubtitleExtractor = class // mp4 -> raw subtitle file
   private
-    FFileName, FOutputFileName: String;
+    FFileName, FTempFileName: String;
   public
-    constructor Create(const AFileName, AOutputFileName: String); virtual;
+    constructor Create(const AFileName, ATempFileName: String); virtual;
     procedure Extract; virtual; abstract;
 
     property FileName: String read FFileName;
-    property OutputFileName: String read FOutputFileName;
   end;
 
   { TPlayerSubtitleFfmpegExtractor }
@@ -31,39 +29,62 @@ type
     procedure Extract; override;
   end;
 
-  { TPlayerSubtitleMP4BoxExtractor }
-
-  TPlayerSubtitleMP4BoxExtractor = class(TPlayerSubtitleExtractor)
-  public
-    procedure Extract; override;
-  end;
-
   { TPlayerTrackParser }
 
-  TPlayerTrackParser = class
+  TPlayerTrackParser = class  // raw subtitle -> nmea -> track
   private
     FFileName: String;
-    FOutputFileName: String;
+    FTempFileName: String;
+    FThread: TPlayerThread;
   public
-    constructor Create(const AFileName, AOutputFileName: String); virtual;
+    constructor Create(const AFileName, ATempFileName: String;
+      AThread: TPlayerThread); virtual;
     procedure Parse; virtual; abstract;
 
     property FileName: String read FFileName;
-    property OutputFileName: String read FOutputFileName;
   end;
 
   { TPlayerNmeaTrackParser }
 
   TPlayerNmeaTrackParser = class(TPlayerTrackParser)
+  private
+    procedure LoadNmea;
   public
     procedure Parse; override;
   end;
 
 implementation
 uses
-  Process;
+  Process, PlayerSessionStorage, dateutils, Math;
 
 { TPlayerNmeaTrackParser }
+
+procedure TPlayerNmeaTrackParser.LoadNmea;
+var
+  CSV: TextFile;
+  Line: String;
+
+  Values: TStringArray;
+  Point: TPlayerPoint;
+begin
+  AssignFile(CSV, FTempFileName);
+  Reset(CSV);
+  try
+    while not Eof(CSV) and not FThread.Terminated do
+    begin
+      ReadLn(CSV, Line);
+      Values:=Line.Split(',');
+
+      Point.time:=ScanDateTime('DDMMYY HHMMSS', Values[9] + ' ' + Values[1]);
+      Point.speed:=RoundTo(Values[7].ToDouble * 1.852, -2);
+      Point.course:=Values[8].ToDouble;
+
+      WriteLn(FloatToStr(Point.course));
+    end;
+  finally
+    CloseFile(CSV);
+  end;
+end;
 
 procedure TPlayerNmeaTrackParser.Parse;
 const
@@ -90,7 +111,7 @@ begin
 
     Process.Execute;
 
-    OutputStream:=TFileStream.Create(OutputFileName, fmCreate);
+    OutputStream:=TFileStream.Create(FTempFileName, fmCreate);
     try
       repeat
         Buffer[0]:=0;
@@ -100,6 +121,8 @@ begin
     finally
       OutputStream.Free;
     end;
+
+    LoadNmea;
   finally
     Process.Free;
   end;
@@ -107,40 +130,13 @@ end;
 
 { TPlayerTrackParser }
 
-constructor TPlayerTrackParser.Create(const AFileName, AOutputFileName: String);
+constructor TPlayerTrackParser.Create(const AFileName, ATempFileName: String;
+  AThread: TPlayerThread);
 begin
+  FThread:=AThread;
   inherited Create;
   FFileName:=AFileName;
-  FOutputFileName:=AOutputFileName;
-end;
-
-{ TPlayerSubtitleMP4BoxExtractor }
-
-procedure TPlayerSubtitleMP4BoxExtractor.Extract;
-var
-  Process: TProcess;
-begin
-  Process:=TProcess.Create(nil);
-  try
-    with Process do
-    begin
-      // ./MP4Box -quiet -raw 3 /win/large2/Видео/2018_01a/16/01051451_0001.MP4 -out 1.txt
-      Executable:='/projects/gpac/bin/gcc/MP4Box';
-
-      Parameters.Add('-quiet');
-      Parameters.Add('-raw');
-      Parameters.Add('3');
-      Parameters.Add(FileName);
-      Parameters.Add('-out');
-      Parameters.Add(OutputFileName);
-
-      Options:=[poWaitOnExit, poUsePipes];
-    end;
-
-    Process.Execute;
-  finally
-    Process.Free;
-  end;
+  FTempFileName:=ATempFileName;
 end;
 
 { TPlayerSubtitleFfmpegExtractor }
@@ -166,7 +162,7 @@ begin
       Parameters.Add('data');
       Parameters.Add('-v');
       Parameters.Add('quiet');
-      Parameters.Add(OutputFileName);
+      Parameters.Add(FTempFileName);
 
       Options:=[poWaitOnExit, poUsePipes];
     end;
@@ -180,11 +176,11 @@ end;
 { TPlayerSubtitleExtractor }
 
 constructor TPlayerSubtitleExtractor.Create(const AFileName,
-  AOutputFileName: String);
+  ATempFileName: String);
 begin
   inherited Create;
   FFileName:=AFileName;
-  FOutputFileName:=AOutputFileName;
+  FTempFileName:=ATempFileName;
 end;
 
 end.

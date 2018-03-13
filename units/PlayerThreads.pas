@@ -51,6 +51,7 @@ type
     destructor Destroy; override;
 
     property Manager: TPlayerThreadManager read FManager;
+    property Terminated;
   end;
 
 

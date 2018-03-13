@@ -20,7 +20,6 @@ type
     FList: TPlayerFileList;
     FLoaded: Boolean;
     FSessionID: String;
-    FSubtileExtractorType: TSubtitleExtractorType;
     FTempDir: String;
     FCrc32: String;
     FStorage: TPlayerSessionStorage;
@@ -31,8 +30,6 @@ type
     function GetFileName(const Index: Integer): String;
     procedure PrepareSession;
     procedure PrepareTempDir(const ATempDir: String);
-  protected
-    function GetSubtileExtractorType: TPlayerSubtitleExtractorClass; virtual;
   public
     constructor Create(AFileList: TStringList; const ATempDir: String);
     destructor Destroy; override;
@@ -48,8 +45,6 @@ type
     property Crc32: String read FCrc32;
     property Loaded: Boolean read FLoaded;
     property SessionID: String read FSessionID;
-    property SubtileExtractorType: TSubtitleExtractorType
-     read FSubtileExtractorType write FSubtileExtractorType;
     property TempDir: String read FTempDir;
   end;
 
@@ -105,7 +100,7 @@ var
   Service: TPlayerSubtitleExtractor;
 begin
   FDataFile:=Format('%ssubtitles_%d.data', [Extractor.TempDir, FIndex]);
-  Service:=Extractor.GetSubtileExtractorType.Create(Extractor[FIndex], FDataFile);
+  Service:=TPlayerSubtitleFfmpegExtractor.Create(Extractor[FIndex], FDataFile);
   try
     Service.Extract;
   finally
@@ -118,7 +113,7 @@ var
   Service: TPlayerTrackParser;
 begin
   FTrackFile:=Format('%strack_%d.data', [Extractor.TempDir, FIndex]);
-  Service:=TPlayerNmeaTrackParser.Create(FDataFile, FTrackFile);
+  Service:=TPlayerNmeaTrackParser.Create(FDataFile, FTrackFile, Self);
   try
     Service.Parse;
   finally
@@ -132,22 +127,9 @@ begin
 end;
 
 procedure TPlayerExtractorThread.Execute;
-var
-  Info: TPlayerFileInfo;
 begin
   if not Terminated then ExtractTrack;
-  if not Terminated then
-  begin
-    ParseTrack;
-    EnterCriticalsection(Manager.FCriticalSection);
-    try
-      Info:=Extractor.FileInfo[FIndex];
-      Info.TrackFile:=FTrackFile;
-      Extractor.FList.Data[FIndex]:=Info;
-    finally
-      LeaveCriticalsection(Manager.FCriticalSection);
-    end;
-  end;
+  if not Terminated then ParseTrack;
 end;
 
 constructor TPlayerExtractorThread.Create(AManager: TPlayerExtractorManager;
@@ -211,14 +193,6 @@ begin
   FStorage:=TPlayerSessionStorage.Create(FTempDir + 'player.db');
 end;
 
-function TPlayerInfoExtractor.GetSubtileExtractorType: TPlayerSubtitleExtractorClass;
-begin
-  case SubtileExtractorType of
-    seFFmpeg: Result:=TPlayerSubtitleFfmpegExtractor;
-    seMP4Box: Result:=TPlayerSubtitleMP4BoxExtractor;
-  end;
-end;
-
 constructor TPlayerInfoExtractor.Create(AFileList: TStringList;
   const ATempDir: String);
 var
@@ -227,14 +201,12 @@ var
 begin
   inherited Create;
   FLoaded:=False;
-  FSubtileExtractorType:=seFFmpeg;
 
   FList:=TPlayerFileList.Create;
   for FileItemName in AFileList do
     if FileExists(FileItemName) then
     begin
       FileAge(FileItemName, FileItemData.CreatedAt);
-      FileItemData.TrackFile:='';
       FileItemData.Size:=FileUtil.FileSize(FileItemName);
 
       FList.Add(FileItemName, FileItemData);
