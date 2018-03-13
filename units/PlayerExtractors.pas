@@ -9,21 +9,10 @@ uses
   cthreads,
   cmem,
 {$endif}
-  Classes, SysUtils, Fgl, PlayerThreads, PlayerSubtitleExtractors,
+  Classes, SysUtils, PlayerThreads, PlayerSubtitleExtractors,
   PlayerSessionStorage;
 
-const
-  PLAYER_DATE_FORMAT = 'YYYY-MM-DD HH:MM:SS';
-
 type
-  TPlayerFileInfo = packed record
-    TrackFile: String;
-    Size: Int64;
-    CreatedAt: TDateTime;
-  end;
-
-  TPlayerFileList = specialize TFPGMap<String, TPlayerFileInfo>;
-
   { TPlayerInfoExtractor }
 
   TPlayerInfoExtractor = class
@@ -42,7 +31,6 @@ type
     function GetFileName(const Index: Integer): String;
     procedure PrepareSession;
     procedure PrepareTempDir(const ATempDir: String);
-    procedure SaveSession;
   protected
     function GetSubtileExtractorType: TPlayerSubtitleExtractorClass; virtual;
   public
@@ -223,18 +211,6 @@ begin
   FStorage:=TPlayerSessionStorage.Create(FTempDir + 'player.db');
 end;
 
-procedure TPlayerInfoExtractor.SaveSession;
-var
-  Files: TStringArray;
-  Index: Integer;
-begin
-  SetLength(Files, Count);
-  for Index:=0 to Count - 1 do
-   Files[Index]:=Self[Index];
-
-  FStorage.AddSession(FSessionID, FCrc32, Files);
-end;
-
 function TPlayerInfoExtractor.GetSubtileExtractorType: TPlayerSubtitleExtractorClass;
 begin
   case SubtileExtractorType of
@@ -327,7 +303,7 @@ begin
 
   if not Loaded then
   begin
-    SaveSession;
+    FStorage.AddSession(FSessionID, FCrc32, FList);
     Result:=TPlayerExtractorManager.Create(Self);
   end;
 end;

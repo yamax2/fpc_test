@@ -5,9 +5,19 @@ unit PlayerSessionStorage;
 interface
 
 uses
-  Classes, SysUtils, dmxPlayer;
+  Classes, SysUtils, Fgl, dmxPlayer;
+
+const
+  PLAYER_DATE_FORMAT = 'YYYY-MM-DD HH:MM:SS';
 
 type
+  TPlayerFileInfo = packed record
+    TrackFile: String;
+    Size: Int64;
+    CreatedAt: TDateTime;
+  end;
+
+  TPlayerFileList = specialize TFPGMap<String, TPlayerFileInfo>;
 
   { TPlayerSessionStorage }
 
@@ -22,7 +32,7 @@ type
     destructor Destroy; override;
 
     procedure AddSession(const ASessionId, crc32: String;
-      const Files: TStringArray);
+      Files: TPlayerFileList);
 
     function FindSession(const crc32: String; const FilesCount: Integer): String;
     procedure MarkSessionLoaded(const ASessionID: String);
@@ -56,7 +66,7 @@ begin
     Script.Script.Clear;
 
     Script.Script.Add('CREATE TABLE IF NOT EXISTS sessions(id TEXT NOT NULL, crc32 TEXT, cc INTEGER NOT NULL DEFAULT 0, loaded INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(id));');
-    Script.Script.Add('CREATE TABLE IF NOT EXISTS tracks(session_id TEXT NOT NULL, rn INTEGER NOT NULL DEFAULT 0, filename TEXT NOT NULL);');
+    Script.Script.Add('CREATE TABLE IF NOT EXISTS tracks(session_id TEXT NOT NULL, rn INTEGER NOT NULL DEFAULT 0, filename TEXT NOT NULL, created_at TEXT NOT NULL, size INTEGER NOT NULL DEFAULT 0);');
 
     Script.Execute;
     Transaction.Commit;
@@ -80,7 +90,7 @@ begin
 end;
 
 procedure TPlayerSessionStorage.AddSession(const ASessionId, crc32: String;
-  const Files: TStringArray);
+  Files: TPlayerFileList);
 var
   Index: Integer;
 begin
@@ -89,12 +99,15 @@ begin
     Script.Script.Clear;
 
     Script.Script.Add('insert into sessions(id, cc, crc32) values(%s, %d, %s);',
-      [QuotedStr(ASessionId), Length(Files), QuotedStr(crc32)]);
+      [QuotedStr(ASessionId), Files.Count, QuotedStr(crc32)]);
 
     // TODO: sql injection!
-    for Index:=0 to Length(Files) - 1 do
-     Script.Script.Add('insert into tracks(session_id, rn, filename) values(%s, %d, %s);',
-       [QuotedStr(ASessionId), Index + 1, QuotedStr(Files[Index])]);
+    for Index:=0 to Files.Count - 1 do
+      Script.Script.Add('insert into tracks(session_id, rn, filename, created_at, size) values(%s, %d, %s, %s, %d);',
+        [QuotedStr(ASessionId), Index + 1,
+         QuotedStr(Files.Keys[Index]),
+         QuotedStr(FormatDateTime(PLAYER_DATE_FORMAT, Files.Data[Index].CreatedAt)),
+         Files.Data[Index].Size]);
 
     Script.Execute;
     Transaction.Commit;
