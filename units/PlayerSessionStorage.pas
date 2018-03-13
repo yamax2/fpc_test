@@ -18,11 +18,11 @@ type
 
   { TPlayerPoint }
 
-  TPlayerPoint = packed record
+  TPlayerPoint = record
     lat, lon: Double;
     time: TDateTime;
     course, speed: Double;
-    ptype: Char;
+    ptype: String;
   end;
 
   TPlayerFileList = specialize TFPGMap<String, TPlayerFileInfo>;
@@ -46,7 +46,15 @@ type
     procedure MarkSessionLoaded(const ASessionID: String);
   end;
 
+  operator = (A, B: TPlayerPoint) R: Boolean;
+
 implementation
+
+operator=(A, B: TPlayerPoint)R: Boolean;
+begin
+  R:=(A.ptype = B.ptype) and (A.lon = B.lon) and (A.lat = B.lat) and
+   (A.course = B.course) and (A.speed = B.speed) and (A.time = B.time);
+end;
 
 { TPlayerSessionStorage }
 

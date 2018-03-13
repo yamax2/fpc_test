@@ -65,7 +65,9 @@ var
   Line: String;
 
   Values: TStringArray;
-  Point: TPlayerPoint;
+  PrevPoint, Point: TPlayerPoint;
+
+  deg, min: String;
 begin
   AssignFile(CSV, FTempFileName);
   Reset(CSV);
@@ -74,12 +76,35 @@ begin
     begin
       ReadLn(CSV, Line);
       Values:=Line.Split(',');
+      if Length(Values) <> 13 then
+        raise Exception.Create('incorrent nmea line');
 
       Point.time:=ScanDateTime('DDMMYY HHMMSS', Values[9] + ' ' + Values[1]);
       Point.speed:=RoundTo(Values[7].ToDouble * 1.852, -2);
       Point.course:=Values[8].ToDouble;
 
-      WriteLn(FloatToStr(Point.course));
+      deg:=Copy(Values[3], 1, 2);
+      min:=Copy(Values[3], 3, Length(Values[3]));
+
+      Point.lat:=RoundTo(deg.ToDouble + (min.ToDouble / 60), -6);
+      if Values[4] = 'S' then Point.lat:=-Point.lat;
+
+      deg:=Copy(Values[5], 1, 3);
+      min:=Copy(Values[5], 4, Length(Values[5]));
+
+      Point.lon:=RoundTo(deg.ToDouble + (min.ToDouble / 60), -6);
+      if Values[6] = 'S' then Point.lon:=-Point.lon;
+
+      Point.ptype:=Values[2];
+
+      if Point <> PrevPoint then
+        WriteLn('lat: ', FloatToStr(Point.lat), ' lon: ', FloatToStr(Point.lon),
+         ' Time: ' + FormatDateTime(PLAYER_DATE_FORMAT, Point.time),
+         ' Speed: ', FloatToStr(Point.speed), ' Course: ',
+         FloatToStr(Point.course), ' ptype: ',
+         Point.ptype);
+
+      PrevPoint:=Point;
     end;
   finally
     CloseFile(CSV);
