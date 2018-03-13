@@ -5,7 +5,7 @@ unit PlayerSubtitleExtractors;
 interface
 
 uses
-  Classes, SysUtils, PlayerThreads;
+  Classes, SysUtils, PlayerThreads, PlayerSessionStorage;
 
 type
   TPlayerSubtitleExtractorClass = class of TPlayerSubtitleExtractor;
@@ -31,23 +31,33 @@ type
 
   { TPlayerTrackParser }
 
+  TPlayerTrackParser = class;
+  TPlayerTrackParserSaveEvent = procedure (Sender: TPlayerTrackParser;
+    Points: TPlayerPointArray) of object;
   TPlayerTrackParser = class  // raw subtitle -> nmea -> track
   private
     FFileName: String;
-    FTempFileName: String;
+    FOnSave: TPlayerTrackParserSaveEvent;
     FThread: TPlayerThread;
+    FSaveTrackLimit: Integer;
+  protected
+    procedure DoSave(Points: TPlayerPointArray); virtual;
   public
-    constructor Create(const AFileName, ATempFileName: String;
-      AThread: TPlayerThread); virtual;
+    constructor Create(const AFileName:
+      String; AThread: TPlayerThread); virtual;
     procedure Parse; virtual; abstract;
 
     property FileName: String read FFileName;
+    property SaveTrackLimit: Integer read FSaveTrackLimit write FSaveTrackLimit;
+
+    property OnSave: TPlayerTrackParserSaveEvent read FOnSave write FOnSave;
   end;
 
   { TPlayerNmeaTrackParser }
 
   TPlayerNmeaTrackParser = class(TPlayerTrackParser)
   private
+    FTempFileName: String;
     procedure LoadNmea;
   public
     procedure Parse; override;
@@ -55,7 +65,7 @@ type
 
 implementation
 uses
-  Process, PlayerSessionStorage, dateutils, Math;
+  Process, dateutils, Math;
 
 { TPlayerNmeaTrackParser }
 
@@ -68,10 +78,14 @@ var
   PrevPoint, Point: TPlayerPoint;
 
   deg, min: String;
+  Points: TPlayerPointArray;
+  Counter: Integer;
 begin
   AssignFile(CSV, FTempFileName);
   Reset(CSV);
   try
+    SetLength(Points, 0);
+    Counter:=0;
     while not Eof(CSV) and not FThread.Terminated do
     begin
       ReadLn(CSV, Line);
@@ -98,14 +112,23 @@ begin
       Point.ptype:=Values[2];
 
       if Point <> PrevPoint then
-        WriteLn('lat: ', FloatToStr(Point.lat), ' lon: ', FloatToStr(Point.lon),
-         ' Time: ' + FormatDateTime(PLAYER_DATE_FORMAT, Point.time),
-         ' Speed: ', FloatToStr(Point.speed), ' Course: ',
-         FloatToStr(Point.course), ' ptype: ',
-         Point.ptype);
+      begin
+        Inc(Counter);
+        SetLength(Points, Counter);
+        Points[High(Points)]:=Point;
+
+        if Counter = SaveTrackLimit then
+        begin
+          DoSave(Points);
+          Counter:=0;
+          SetLength(Points, 0);
+        end;
+      end;
 
       PrevPoint:=Point;
     end;
+
+    DoSave(Points);
   finally
     CloseFile(CSV);
   end;
@@ -120,6 +143,8 @@ var
   Buffer: array[0..BUF_SIZE - 1] of Byte;
   BytesRead: LongInt;
 begin
+  FTempFileName:=FFileName + '.nmea';
+
   Process:=TProcess.Create(nil);
   try
     with Process do
@@ -155,13 +180,19 @@ end;
 
 { TPlayerTrackParser }
 
-constructor TPlayerTrackParser.Create(const AFileName, ATempFileName: String;
+procedure TPlayerTrackParser.DoSave(Points: TPlayerPointArray);
+begin
+  if @FOnSave <> nil then
+   FOnSave(Self, Points);
+end;
+
+constructor TPlayerTrackParser.Create(const AFileName: String;
   AThread: TPlayerThread);
 begin
   FThread:=AThread;
   inherited Create;
   FFileName:=AFileName;
-  FTempFileName:=ATempFileName;
+  FSaveTrackLimit:=100;
 end;
 
 { TPlayerSubtitleFfmpegExtractor }

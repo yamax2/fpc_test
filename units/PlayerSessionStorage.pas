@@ -26,6 +26,7 @@ type
   end;
 
   TPlayerFileList = specialize TFPGMap<String, TPlayerFileInfo>;
+  TPlayerPointArray = array of TPlayerPoint;
 
   { TPlayerSessionStorage }
 
@@ -41,6 +42,8 @@ type
 
     procedure AddSession(const ASessionId, crc32: String;
       Files: TPlayerFileList);
+    procedure AddPoints(const SessionId: String; const TrackRn: Integer;
+      Points: TPlayerPointArray);
 
     function FindSession(const crc32: String; const FilesCount: Integer): String;
     procedure MarkSessionLoaded(const ASessionID: String);
@@ -146,6 +149,44 @@ begin
          QuotedStr(Files.Keys[Index]),
          QuotedStr(FormatDateTime(PLAYER_DATE_FORMAT, Files.Data[Index].CreatedAt)),
          Files.Data[Index].Size]);
+
+    Script.Execute;
+    Transaction.Commit;
+  end;
+end;
+
+procedure TPlayerSessionStorage.AddPoints(const SessionId: String;
+  const TrackRn: Integer; Points: TPlayerPointArray);
+var
+  TrackId: Integer;
+  Point: TPlayerPoint;
+begin
+  if Length(Points) = 0 then Exit;
+
+  with FData do
+  begin
+    Query.SQL.Text:=Format(
+      'select rowid id from tracks where session_id = %s and rn = %d limit 1',
+      [QuotedStr(SessionId), TrackRn + 1]
+    );
+
+    Query.Open;
+    if Query.EOF then
+      raise Exception.CreateFmt('no track for %s, %d', [SessionId, TrackRn]);
+
+    TrackId:=Query.FieldByName('id').AsInteger;
+    Query.Close;
+
+    Script.Script.Clear;
+    for Point in Points do
+      Script.Script.Add(
+        'insert into points(track_id, lat, lon, time, course, speed, type) ' +
+        'values(%d, %.6n, %.6n, %s, %n, %n, %s);', [TrackId,
+         Point.lat,
+         Point.lon,
+         QuotedStr(FormatDateTime(PLAYER_DATE_FORMAT, Point.time)),
+         Point.course,
+         Point.speed, QuotedStr(Point.ptype)]);
 
     Script.Execute;
     Transaction.Commit;

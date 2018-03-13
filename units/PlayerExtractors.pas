@@ -69,11 +69,13 @@ type
   TPlayerExtractorThread = class(TPlayerThread)
   private
     FIndex: Integer;
-    FDataFile, FTrackFile: String;
+    FDataFile: String;
     function GetExtractor: TPlayerInfoExtractor;
     function GetManager: TPlayerExtractorManager;
     procedure ExtractTrack;
     procedure ParseTrack;
+    procedure SavePoints(Sender: TPlayerTrackParser;
+      Points: TPlayerPointArray);
   protected
     procedure Execute; override;
   public
@@ -112,13 +114,19 @@ procedure TPlayerExtractorThread.ParseTrack;
 var
   Service: TPlayerTrackParser;
 begin
-  FTrackFile:=Format('%strack_%d.data', [Extractor.TempDir, FIndex]);
-  Service:=TPlayerNmeaTrackParser.Create(FDataFile, FTrackFile, Self);
+  Service:=TPlayerNmeaTrackParser.Create(FDataFile, Self);
   try
+    Service.OnSave:=@SavePoints;
     Service.Parse;
   finally
     Service.Free;
   end;
+end;
+
+procedure TPlayerExtractorThread.SavePoints(Sender: TPlayerTrackParser;
+  Points: TPlayerPointArray);
+begin
+  Extractor.FStorage.AddPoints(Extractor.SessionID, FIndex, Points);
 end;
 
 function TPlayerExtractorThread.GetExtractor: TPlayerInfoExtractor;
