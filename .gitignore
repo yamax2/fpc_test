@@ -6,3 +6,6 @@ test.o
 lib
 backup
 tmp
+sqlite/*.so
+sqlite/*.dll
+sqlite/extension-functions.c

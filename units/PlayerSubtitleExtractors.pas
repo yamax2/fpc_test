@@ -173,6 +173,7 @@ begin
     end;
 
     LoadNmea;
+    Process.Terminate(0);
   finally
     Process.Free;
   end;
