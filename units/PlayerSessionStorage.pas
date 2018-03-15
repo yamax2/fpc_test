@@ -52,11 +52,28 @@ type
   operator = (A, B: TPlayerPoint) R: Boolean;
 
 implementation
+uses
+  sqlite3;
+
+{$R sql.rc}
 
 operator=(A, B: TPlayerPoint)R: Boolean;
 begin
   R:=(A.ptype = B.ptype) and (A.lon = B.lon) and (A.lat = B.lat) and
    (A.course = B.course) and (A.speed = B.speed) and (A.time = B.time);
+end;
+
+procedure LoadTextFromResource(AList: TStrings;
+  const ResourceName: String);
+var
+  ResourceStream: TResourceStream;
+begin
+  ResourceStream:=TResourceStream.Create(HInstance, ResourceName, RT_RCDATA);
+  try
+    AList.LoadFromStream(ResourceStream);
+  finally
+    ResourceStream.Free;
+  end;
 end;
 
 { TPlayerSessionStorage }
@@ -82,31 +99,12 @@ procedure TPlayerSessionStorage.PrepareDatabase;
 begin
   with FData do
   begin
+    // TODO: Connection.LoadConnection fails?
+    sqlite3_enable_load_extension(Connection.Handle, 1);
+    sqlite3_load_extension(Connection.Handle, 'libsqlitefunctions.so', nil, nil);
+
     Script.Script.Clear;
-
-    Script.Script.Add('CREATE TABLE IF NOT EXISTS sessions(id TEXT NOT NULL, ' +
-     'crc32 TEXT, cc INTEGER NOT NULL DEFAULT 0, '+
-     'loaded INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(id));');
-
-    Script.Script.Add('CREATE TABLE IF NOT EXISTS tracks(' +
-      'session_id TEXT NOT NULL, rn INTEGER NOT NULL DEFAULT 0,' +
-      'filename TEXT NOT NULL, created_at TEXT NOT NULL, ' +
-      'size INTEGER NOT NULL DEFAULT 0);');
-
-    Script.Script.Add('CREATE TABLE IF NOT EXISTS points(' +
- 	'track_id INTEGER NOT NULL,' +
-	'lat REAL,' +
-	'lon REAL, ' +
-	'time TEXT, ' +
-	'course REAL, ' +
-	'speed REAL, ' +
-	'type TEXT NOT NULL);');
-
-    Script.Script.Add('CREATE INDEX IF NOT EXISTS ' +
-      'ix_points_track_id ON points(track_id);');
-
-    Script.Script.Add('CREATE INDEX IF NOT EXISTS ' +
-       'ix_tracks ON tracks(session_id, rn);');
+    LoadTextFromResource(Script.Script, 'DB');
 
     Script.Execute;
     Transaction.Commit;

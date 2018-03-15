@@ -1,5 +1,3 @@
--- select load_extension('/projects/other/test/sqlite/libsqlitefunctions.so');
-
 with recursive limits as (
 select 60 * 60 time_limit,
        1000 m_limit,
@@ -49,7 +47,7 @@ dd as (
 select rr.t1_id,
        rr.t2_id,
        6371000 * 2 * atan2(sqrt(rr.a), sqrt(1 - rr.a)) m_delta,
-        rr.td time_delta
+       rr.td time_delta
 from rr, limits
   where 6371000 * 2 * atan2(sqrt(rr.a), sqrt(1 - rr.a)) <= limits.m_limit
 ),
