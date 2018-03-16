@@ -1,21 +1,28 @@
-with recursive limits as (
-select 60 * 60 time_limit,
-       1000 m_limit,
-       '01c40520-e416-4f7a-8b98-0bdc7613e3ff' session_id
-),
-info as (
--- track info: start point, end_point
+-- select load_extension('/projects/fpc_test/sqlite/libsqlitefunctions.so');
+
+create temporary table tmp_consts as 
+select 60 * 60 time_limit, -- max time between trips
+       1000 m_limit,       -- max distance between trips
+       'dd090fcc-adc1-4ec3-88fa-cc68ced11468' session_id;
+
+with info as (
 select points.track_id,
        min(points.rowid) start_id,
        max(points.rowid) end_id
- from limits, points
+ from tmp_consts consts, points
   join tracks on tracks.rowid = points.track_id
-    where tracks.session_id = limits.session_id
+    where tracks.session_id = consts.session_id
       and points.type = 'A'
-      group by track_id),
-source as (
+      group by track_id)
+update tracks 
+   set start_id = (select start_id from info where info.track_id = tracks.rowid),
+       end_id = (select end_id from info where info.track_id = tracks.rowid)
+where session_id in (select session_id from tmp_consts);
+
+create temporary table tmp_trips as
+with recursive source as (
 -- source info: track start and end coords and time
-select info.track_id,
+select info.rowid track_id,
 
        radians(p1.lat) start_latr,
        radians(p1.lon) start_lonr,
@@ -26,7 +33,7 @@ select info.track_id,
        radians(p2.lon) end_lonr,
 
        strftime('%s', p2.time) end_time
- from info
+ from tracks info
    join points p1 on p1.rowid = info.start_id
    join points p2 on p2.rowid = info.end_id
 ),
@@ -38,18 +45,18 @@ select s1.track_id t1_id,
          cos(s1.start_latr) * cos(s2.end_latr) * power(sin((s2.start_lonr - s1.end_lonr) / 2), 2) a,
 
        s2.start_time - s1.end_time td
-  from source s1, source s2, limits
+  from source s1, source s2, tmp_consts consts
    where s1.track_id <> s2.track_id
      and s2.start_time >= s1.end_time
-     and s2.start_time - s1.end_time <= limits.time_limit
+     and s2.start_time - s1.end_time <= consts.time_limit
 ),
 dd as (
 select rr.t1_id,
        rr.t2_id,
        6371000 * 2 * atan2(sqrt(rr.a), sqrt(1 - rr.a)) m_delta,
        rr.td time_delta
-from rr, limits
-  where 6371000 * 2 * atan2(sqrt(rr.a), sqrt(1 - rr.a)) <= limits.m_limit
+from rr, tmp_consts consts
+  where 6371000 * 2 * atan2(sqrt(rr.a), sqrt(1 - rr.a)) <= consts.m_limit
 ),
 dd1 as (
 select t1_id, min(time_delta)  min_time_delta
@@ -68,9 +75,9 @@ select dd1.t1_id,
 ),
 rrs as (
 select t.rowid id, dd2.t2_id
- from limits, tracks t
+ from tmp_consts consts, tracks t
    join dd2 on dd2.t1_id = t.rowid
-    where t.session_id = limits.session_id
+    where t.session_id = consts.session_id
 ),
 tops as (
 select id from rrs r
@@ -83,4 +90,48 @@ select rrs.t2_id, zz.lv, zz.rn + 1
  from zz, rrs
    where rrs.id = zz.id and rrs.t2_id is not null
 )
-select * from zz order by lv, rn
+select consts.session_id, zz.* from zz, tmp_consts consts;
+
+drop table tmp_consts;
+drop table tmp_trips;
+
+/*
+with r1 as (
+select t.session_id, 
+       t.lv start_id,
+       max(t.rn) max_rn
+  from tmp_trips t
+   group by t.session_id, t.lv
+),
+r2 as (
+select r1.session_id,
+       r1.start_id,
+       (select id
+         from tmp_trips
+          where session_id = r1.session_id
+           and lv = r1.start_id
+           and rn = r1.max_rn) end_id
+ from r1
+union all
+select tracks.session_id, tracks.rowid, tracks.rowid
+  from tracks, tmp_consts consts
+   where tracks.rowid not in (select id from tmp_trips)
+     and tracks.session_id = consts.session_id
+)
+
+select r2.session_id,
+       r2.start_id lv,
+
+       p1.time started_at,
+       strftime('%s', p2.time) - strftime('%s', p1.time) duration,
+
+       (select sum(tracks.size)
+          from tracks, tmp_trips
+            where tmp_trips.lv = r2.start_id and tracks.rowid = tmp_trips.id) size
+  from r2
+   join tracks t1 on t1.rowid = r2.start_id
+   join points p1 on p1.rowid = t1.start_id
+
+   join tracks t2 on t2.rowid = r2.end_id
+   join points p2 on p2.rowid = t2.end_id
+*/

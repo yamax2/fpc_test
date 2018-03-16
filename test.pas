@@ -16,7 +16,7 @@ uses
   Classes, SysUtils, FileUtil, Process, crc;
 
 const
-  VIDEO_DIR = '/home/max/Загрузки/1'; //'/win/video/2018_01a/zz01-02-01-2018';
+  VIDEO_DIR = '/win/video/2018_01a/zz01-02-01-2018';
     //'/win/video/2018_01a/zz01-02-01-2018/04'; //'/win/video/2018_01a/16';
     //'/win/video/2018_01a/zz14-04-01-2018';
 

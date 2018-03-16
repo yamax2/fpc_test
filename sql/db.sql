@@ -14,7 +14,9 @@ create table if not exists tracks(
   created_at text not null,
   size integer not null default 0,
   trip_id integer,
-  trip_rn integer
+  trip_rn integer,
+  start_id integer,
+  end_id integer
 );
 
 create table if not exists points(
@@ -29,11 +31,11 @@ create table if not exists points(
 
 create table if not exists trips(
   session_id text not null,
-  rn integer not null,         -- trip order
   started_at text not null,    -- trip started at
   duration integer not null,   -- duration, sec
-  size integer not null,       -- size of all files in bytes
-  avg_speed real not null      -- avg speed km/h
+  distance real not null,      -- distance, km
+  avg_speed real not null,     -- avg speed km/h
+  size integer not null        -- size of all files in bytes
 );
 
 create index if not exists ix_points_track_id on points(track_id);
@@ -41,3 +43,5 @@ create index if not exists ix_tracks_session_id on tracks(session_id);
 create index if not exists ix_tracks_trip_id on tracks(trip_id);
 create index if not exists ix_tracks_trip on tracks(trip_id, rn);
 create index if not exists ix_trips_session_id on trips(session_id);
+create index if not exists ix_tracks_start_id on tracks(start_id);
+create index if not exists ix_tracks_end_id on tracks(end_id);

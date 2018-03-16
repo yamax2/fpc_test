@@ -101,7 +101,7 @@ begin
   begin
     // TODO: Connection.LoadConnection fails?
     sqlite3_enable_load_extension(Connection.Handle, 1);
-    sqlite3_load_extension(Connection.Handle, 'libsqlitefunctions.so', nil, nil);
+    sqlite3_load_extension(Connection.Handle, 'sqlite/libsqlitefunctions.so', nil, nil);
 
     Script.Script.Clear;
     LoadTextFromResource(Script.Script, 'DB');
