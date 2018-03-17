@@ -16,25 +16,23 @@ uses
   Classes, SysUtils, FileUtil, Process, crc;
 
 const
-  VIDEO_DIR = '/win/video/2018_01a/zz01-02-01-2018';
-    //'/win/video/2018_01a/zz01-02-01-2018/04'; //'/win/video/2018_01a/16';
-    //'/win/video/2018_01a/zz14-04-01-2018';
+  VIDEO_DIR = '/win/c/downloads/Ночь (прошивка 1027)';
+    //'/win/video/2018_01a/zz01-02-01-2018';
 
 var
   Extractor: TPlayerInfoExtractor;
   Files: TStringList;
-
-  Index: Integer;
 begin
   Files:=TStringList.Create;
   try
     FindAllFiles(Files, VIDEO_DIR, '*.mp4;*.MP4', True);
+    //Files.Add('/win/c/downloads/Ночь (прошивка 1027)/12101625_0018.MP4');
     Extractor:=TPlayerInfoExtractor.Create(Files, './tmp');
     try
-      Extractor.LoadData.WaitFor;
+      if not Extractor.Loaded then
+        Extractor.LoadData.WaitFor;
 
-      for Index:=0 to Extractor.Count - 1 do
-        WriteLn(Extractor[Index], ': ', Extractor.FileInfo[Index].Size);
+      WriteLn(Extractor.SessionID);
     finally
       Extractor.Free;
     end;

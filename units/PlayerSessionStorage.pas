@@ -46,8 +46,8 @@ type
     procedure AddPoints(const SessionId: String; const TrackRn: Integer;
       Points: TPlayerPointArray);
 
+    procedure FinalizeSession(const ASessionID: String);
     function FindSession(const crc32: String; const FilesCount: Integer): String;
-    procedure MarkSessionLoaded(const ASessionID: String);
   end;
 
   operator = (A, B: TPlayerPoint) R: Boolean;
@@ -140,7 +140,6 @@ begin
     Script.Script.Add('insert into sessions(id, cc, crc32) values(%s, %d, %s);',
       [QuotedStr(ASessionId), Files.Count, QuotedStr(crc32)]);
 
-    // TODO: sql injection!
     for Index:=0 to Files.Count - 1 do
       Script.Script.Add('insert into tracks(session_id, rn, filename, ' +
         'created_at, size) values(%s, %d, %s, %s, %d);',
@@ -210,13 +209,31 @@ begin
   end;
 end;
 
-procedure TPlayerSessionStorage.MarkSessionLoaded(const ASessionID: String);
+procedure TPlayerSessionStorage.FinalizeSession(const ASessionID: String);
+var
+  SQL: TStringArray;
+  Index: Integer;
 begin
   with FData do
   begin
-    Script.Script.Text:=Format('update sessions set loaded = 1 where id = %s',
+    LoadTextFromResource(Query.SQL, 'TRIPS');
+    SQL:=Query.SQL.Text.Split(';');
+
+    for Index:=0 to High(SQL) do
+    begin
+      if SQL[Index].Trim = '' then Continue;
+
+      Query.SQL.Text:=SQL[Index];
+      if Index = 0 then
+        Query.ParamByName('session_id').AsString:=ASessionID;
+
+      Query.ExecSQL;
+    end;
+
+    Script.Script.Text:=Format('update sessions set loaded = 1 where id = %s;',
       [QuotedStr(ASessionID)]);
     Script.Execute;
+
     Transaction.Commit;
   end;
 end;

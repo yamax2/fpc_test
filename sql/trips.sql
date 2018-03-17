@@ -1,9 +1,9 @@
--- select load_extension('/projects/fpc_test/sqlite/libsqlitefunctions.so');
+-- select load_extension('/projects/fpc_test/sqlite/libsqlitefunctions.so')
 
 create temporary table tmp_consts as 
 select 60 * 60 time_limit, -- max time between trips
        1000 m_limit,       -- max distance between trips
-       '1a89a87a-415d-4f48-9cd2-8ca9b568a122' session_id;
+       :session_id session_id;
 
 with rns as (
 select points.track_id,
@@ -28,6 +28,31 @@ update tracks
        end_id = (select end_id from info where info.track_id = tracks.rowid)
 where session_id in (select session_id from tmp_consts);
 
+create temporary table tmp_distances as
+with source1 as (
+select tracks.rowid track_id,
+       radians(p1.lat) start_latr,
+       radians(p1.lon) start_lonr,
+       radians(p2.lat) end_latr,
+       radians(p2.lon) end_lonr
+ from tracks, tmp_consts consts
+  join points p1 on p1.track_id = tracks.rowid
+  join points p2 on p2.track_id = tracks.rowid and p2.rn = p1.rn + 1
+   where tracks.session_id = consts.session_id
+),
+source2 as (
+select track_id,
+       power(sin( (end_latr - start_latr) / 2), 2) +
+         cos(start_latr) * cos(end_latr) * power(sin((end_lonr - start_lonr) / 2), 2) a
+ from source1
+)
+select track_id, sum(6371000 * 2 * atan2(sqrt(a), sqrt(1 - a))) distance 
+ from source2  
+   group by track_id;
+
+update tracks 
+   set distance = (select distance from tmp_distances where tmp_distances.track_id = tracks.rowid)
+where session_id in (select session_id from tmp_consts);
 
 create temporary table tmp_trips as
 with recursive source as (
@@ -100,12 +125,14 @@ select rrs.t2_id, zz.lv, zz.rn + 1
  from zz, rrs
    where rrs.id = zz.id and rrs.t2_id is not null
 )
-select consts.session_id, zz.* from zz, tmp_consts consts;
+select consts.session_id, zz.* from zz, tmp_consts consts
+union all
+select consts.session_id, tracks.rowid, tracks.rowid, 1 
+ from tmp_consts consts, tracks 
+  where tracks.rowid not in (select id from zz)
+    and tracks.session_id = consts.session_id;
 
-drop table tmp_consts;
-drop table tmp_trips;
-
-/*
+insert into trips(session_id, start_id, started_at, duration, size, distance, avg_speed)
 with r1 as (
 select t.session_id, 
        t.lv start_id,
@@ -116,19 +143,12 @@ select t.session_id,
 r2 as (
 select r1.session_id,
        r1.start_id,
-       (select id
-         from tmp_trips
+       (select id from tmp_trips
           where session_id = r1.session_id
-           and lv = r1.start_id
-           and rn = r1.max_rn) end_id
+            and lv = r1.start_id
+            and rn = r1.max_rn) end_id
  from r1
-union all
-select tracks.session_id, tracks.rowid, tracks.rowid
-  from tracks, tmp_consts consts
-   where tracks.rowid not in (select id from tmp_trips)
-     and tracks.session_id = consts.session_id
 )
-
 select r2.session_id,
        r2.start_id lv,
 
@@ -137,11 +157,45 @@ select r2.session_id,
 
        (select sum(tracks.size)
           from tracks, tmp_trips
-            where tmp_trips.lv = r2.start_id and tracks.rowid = tmp_trips.id) size
+            where tmp_trips.lv = r2.start_id and tracks.rowid = tmp_trips.id) size,
+
+       (select sum(tracks.distance)
+          from tmp_trips, tracks
+         where tmp_trips.lv = r2.start_id
+           and tracks.rowid = tmp_trips.id
+       ) distance,
+
+       (select avg(points.speed)
+          from tracks, tmp_trips, points 
+         where tmp_trips.lv = r2.start_id 
+           and tracks.rowid = tmp_trips.id
+           and points.track_id = tracks.rowid
+           and points.speed > 0
+       ) avg_speed
   from r2
    join tracks t1 on t1.rowid = r2.start_id
    join points p1 on p1.rowid = t1.start_id
 
    join tracks t2 on t2.rowid = r2.end_id
-   join points p2 on p2.rowid = t2.end_id
-*/
+   join points p2 on p2.rowid = t2.end_id;
+
+update tracks
+   set trip_id = (
+          select trips.rowid
+            from trips, tmp_trips t
+           where trips.session_id = tracks.session_id
+             and t.id = tracks.rowid
+             and t.lv = trips.start_id
+       ),
+
+       trip_rn = (
+         select t.rn
+           from tmp_trips t
+          where t.id = tracks.rowid 
+            and t.session_id = tracks.session_id
+       )
+where session_id in (select session_id from tmp_consts);
+
+drop table tmp_distances;
+drop table tmp_consts;
+drop table tmp_trips;

@@ -173,6 +173,8 @@ end;
 
 destructor TPlayerExtractorManager.Destroy;
 begin
+  FExtractor.FStorage.FinalizeSession(FExtractor.FSessionID);
+  DeleteDirectory(FExtractor.FTempDir, False);
   Extractor.FLoaded:=True;
   DoneCriticalsection(FCriticalSection);
   inherited;
