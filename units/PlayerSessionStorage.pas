@@ -19,6 +19,7 @@ type
   { TPlayerPoint }
 
   TPlayerPoint = record
+    rn: Integer;
     lat, lon: Double;
     time: TDateTime;
     course, speed: Double;
@@ -178,8 +179,9 @@ begin
     Script.Script.Clear;
     for Point in Points do
       Script.Script.Add(
-        'insert into points(track_id, lat, lon, time, course, speed, type) ' +
-        'values(%d, %.6n, %.6n, %s, %n, %n, %s);', [TrackId,
+        'insert into points(track_id, rn, lat, lon, time, course, speed, type) ' +
+        'values(%d, %d, %.6n, %.6n, %s, %n, %n, %s);', [TrackId,
+         Point.rn,
          Point.lat,
          Point.lon,
          QuotedStr(FormatDateTime(PLAYER_DATE_FORMAT, Point.time)),

@@ -21,6 +21,7 @@ create table if not exists tracks(
 
 create table if not exists points(
   track_id integer not null,
+  rn integer not null,       -- order in track
   lat real,
   lon real,
   time text,

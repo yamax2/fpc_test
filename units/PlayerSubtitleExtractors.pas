@@ -79,13 +79,14 @@ var
 
   deg, min: String;
   Points: TPlayerPointArray;
-  Counter: Integer;
+  Counter, Rn: Integer;
 begin
   AssignFile(CSV, FTempFileName);
   Reset(CSV);
   try
     SetLength(Points, 0);
     Counter:=0;
+    Rn:=0;
     while not Eof(CSV) and not FThread.Terminated do
     begin
       ReadLn(CSV, Line);
@@ -113,8 +114,12 @@ begin
 
       if Point <> PrevPoint then
       begin
+        Inc(Rn);
+        Point.rn:=Rn;
+
         Inc(Counter);
         SetLength(Points, Counter);
+
         Points[High(Points)]:=Point;
 
         if Counter = SaveTrackLimit then

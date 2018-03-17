@@ -3,21 +3,31 @@
 create temporary table tmp_consts as 
 select 60 * 60 time_limit, -- max time between trips
        1000 m_limit,       -- max distance between trips
-       'dd090fcc-adc1-4ec3-88fa-cc68ced11468' session_id;
+       '1a89a87a-415d-4f48-9cd2-8ca9b568a122' session_id;
 
-with info as (
+with rns as (
 select points.track_id,
-       min(points.rowid) start_id,
-       max(points.rowid) end_id
+       min(points.rn) start_rn,
+       max(points.rn) end_rn
  from tmp_consts consts, points
   join tracks on tracks.rowid = points.track_id
     where tracks.session_id = consts.session_id
       and points.type = 'A'
-      group by track_id)
+      group by track_id
+),
+info as (
+select rns.track_id,
+       p1.rowid start_id,
+       p2.rowid end_id
+ from rns 
+  join points p1 on p1.track_id = rns.track_id and p1.rn = rns.start_rn
+  join points p2 on p2.track_id = rns.track_id and p2.rn = rns.end_rn
+)
 update tracks 
    set start_id = (select start_id from info where info.track_id = tracks.rowid),
        end_id = (select end_id from info where info.track_id = tracks.rowid)
 where session_id in (select session_id from tmp_consts);
+
 
 create temporary table tmp_trips as
 with recursive source as (
