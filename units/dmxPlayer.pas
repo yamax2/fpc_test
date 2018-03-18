@@ -36,8 +36,9 @@ uses
 procedure TdmPlayer.ConnectionLog(Sender: TSQLConnection;
   EventType: TDBEventType; const Msg: String);
 begin
-  WriteLn(FLogFile, '[', FormatDateTime(PLAYER_DATE_FORMAT, Now), ']: ',
-    'EventType: ', EventType, ' Msg: ', Msg);
+  if ploDB in opts.LogOptions then
+    WriteLn(FLogFile, '[', FormatDateTime(PLAYER_DATE_FORMAT, Now), ']: ',
+     'EventType: ', EventType, ' Msg: ', Msg);
 end;
 
 constructor TdmPlayer.Create(AOwner: TComponent);

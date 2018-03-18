@@ -38,7 +38,9 @@ select tracks.rowid track_id,
  from tracks, tmp_consts consts
   join points p1 on p1.track_id = tracks.rowid
   join points p2 on p2.track_id = tracks.rowid and p2.rn = p1.rn + 1
-   where tracks.session_id = consts.session_id
+   where tracks.session_id = consts.session_id 
+     and p1.type = 'A'
+     and p2.type = 'A'
 ),
 source2 as (
 select track_id,

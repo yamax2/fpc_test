@@ -17,19 +17,19 @@ uses
   Classes, SysUtils, FileUtil, Process, crc;
 
 const
-  VIDEO_DIR = // '/win/c/downloads/Ночь (прошивка 1027)';
-    '/win/video/2018_01a/zz01-02-01-2018';
+  VIDEO_DIR = //'/win/c/downloads/Ночь (прошивка 1027)';
+     '/win/video/2018_01a/zz01-02-01-2018';
 
 var
   Extractor: TPlayerInfoExtractor;
   Files: TStringList;
 begin
   opts.TempDir:='./tmp';
+  opts.LogOptions:=[ploExtractor, ploDB];
 
   Files:=TStringList.Create;
   try
     FindAllFiles(Files, VIDEO_DIR, '*.mp4;*.MP4', True);
-    // Files.Add('/win/c/downloads/Ночь (прошивка 1027)/12101625_0018.MP4');
     Extractor:=TPlayerInfoExtractor.Create(Files);
     try
       if not Extractor.Loaded then

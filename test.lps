@@ -43,8 +43,9 @@
         <Filename Value="test.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Test"/>
-        <CursorPos X="49" Y="33"/>
-        <UsageCount Value="195"/>
+        <IsVisibleTab Value="True"/>
+        <CursorPos X="49" Y="30"/>
+        <UsageCount Value="196"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -53,7 +54,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="260"/>
         <CursorPos X="30" Y="266"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="182"/>
         <Bookmarks Count="1">
           <Item0 X="18" Y="266" ID="1"/>
         </Bookmarks>
@@ -64,22 +65,21 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="16"/>
         <CursorPos X="16" Y="48"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="182"/>
       </Unit2>
       <Unit3>
         <Filename Value="units/PlayerSubtitleExtractors.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="69"/>
-        <CursorPos X="31" Y="69"/>
-        <UsageCount Value="170"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="25"/>
+        <CursorPos X="20" Y="108"/>
+        <UsageCount Value="171"/>
       </Unit3>
       <Unit4>
         <Filename Value="units/CpuCount.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="151"/>
+        <UsageCount Value="152"/>
       </Unit4>
       <Unit5>
         <Filename Value="units/PlayerSessionStorage.pas"/>
@@ -87,16 +87,15 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="129"/>
         <CursorPos X="42" Y="156"/>
-        <UsageCount Value="118"/>
+        <UsageCount Value="119"/>
       </Unit5>
       <Unit6>
         <Filename Value="units/PlayerLogger.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
-        <CursorPos X="28" Y="19"/>
-        <UsageCount Value="116"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="32"/>
+        <CursorPos X="24" Y="65"/>
+        <UsageCount Value="117"/>
       </Unit6>
       <Unit7>
         <Filename Value="units/dmxPlayer.pas"/>
@@ -104,12 +103,10 @@
         <ComponentName Value="dmPlayer"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="11"/>
-        <CursorPos X="28" Y="48"/>
-        <UsageCount Value="113"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <CursorPos X="4" Y="40"/>
+        <UsageCount Value="114"/>
       </Unit7>
       <Unit8>
         <Filename Value="units/PlayerDatasets.pas"/>
@@ -353,102 +350,21 @@
       <Unit42>
         <Filename Value="units/PlayerOptions.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="9"/>
-        <CursorPos X="39" Y="20"/>
-        <UsageCount Value="23"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="5"/>
+        <CursorPos X="43" Y="13"/>
+        <UsageCount Value="24"/>
       </Unit42>
     </Units>
-    <JumpHistory Count="22" HistoryIndex="21">
+    <JumpHistory Count="2" HistoryIndex="1">
       <Position1>
-        <Filename Value="units/dmxPlayer.pas"/>
-        <Caret Line="23" Column="34"/>
-      </Position1>
-      <Position2>
-        <Filename Value="units/PlayerLogger.pas"/>
-        <Caret Line="19" Column="26"/>
-      </Position2>
-      <Position3>
-        <Filename Value="units/dmxPlayer.pas"/>
-        <Caret Line="49" Column="21"/>
-      </Position3>
-      <Position4>
-        <Filename Value="units/dmxPlayer.pas"/>
-        <Caret Line="27" Column="44"/>
-      </Position4>
-      <Position5>
-        <Filename Value="units/PlayerLogger.pas"/>
-        <Caret Line="48" Column="22" TopLine="18"/>
-      </Position5>
-      <Position6>
-        <Filename Value="units/PlayerLogger.pas"/>
-        <Caret Line="40" Column="30" TopLine="15"/>
-      </Position6>
-      <Position7>
-        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <Caret Line="61" Column="22" TopLine="27"/>
-      </Position7>
-      <Position8>
-        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <Caret Line="136" Column="15" TopLine="97"/>
-      </Position8>
-      <Position9>
-        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <Caret Line="44" Column="15" TopLine="19"/>
-      </Position9>
-      <Position10>
-        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
-        <Caret Line="191" Column="3" TopLine="189"/>
-      </Position10>
-      <Position11>
-        <Filename Value="units/PlayerOptions.pas"/>
-        <Caret Line="18" Column="61"/>
-      </Position11>
-      <Position12>
-        <Filename Value="units/PlayerOptions.pas"/>
-        <Caret Line="19" Column="58"/>
-      </Position12>
-      <Position13>
-        <Filename Value="units/PlayerOptions.pas"/>
-        <Caret Line="20" Column="35"/>
-      </Position13>
-      <Position14>
-        <Filename Value="units/PlayerOptions.pas"/>
-        <Caret Line="25" Column="17"/>
-      </Position14>
-      <Position15>
-        <Filename Value="units/PlayerLogger.pas"/>
-        <Caret Line="59" Column="26" TopLine="20"/>
-      </Position15>
-      <Position16>
-        <Filename Value="units/PlayerOptions.pas"/>
-        <Caret Line="24" Column="56"/>
-      </Position16>
-      <Position17>
-        <Filename Value="units/PlayerOptions.pas"/>
-        <Caret Line="28" Column="33" TopLine="2"/>
-      </Position17>
-      <Position18>
         <Filename Value="test.pas"/>
         <Caret Line="33" Column="49"/>
-      </Position18>
-      <Position19>
-        <Filename Value="units/PlayerLogger.pas"/>
-        <Caret Line="39" Column="17" TopLine="20"/>
-      </Position19>
-      <Position20>
-        <Filename Value="units/PlayerLogger.pas"/>
-        <Caret Line="21" Column="24" TopLine="8"/>
-      </Position20>
-      <Position21>
-        <Filename Value="units/PlayerLogger.pas"/>
-        <Caret Line="42" Column="20" TopLine="23"/>
-      </Position21>
-      <Position22>
-        <Filename Value="units/PlayerLogger.pas"/>
-        <Caret Line="21" Column="23"/>
-      </Position22>
+      </Position1>
+      <Position2>
+        <Filename Value="test.pas"/>
+        <Caret Line="28" Column="21"/>
+      </Position2>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

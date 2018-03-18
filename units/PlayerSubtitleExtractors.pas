@@ -92,25 +92,34 @@ begin
       ReadLn(CSV, Line);
       Values:=Line.Split(',');
       if Length(Values) <> 13 then
-        raise Exception.Create('incorrent nmea line');
+        raise Exception.CreateFmt('incorrent nmea line %s', [Line]);
 
       Point.time:=ScanDateTime('DDMMYY HHMMSS', Values[9] + ' ' + Values[1]);
-      Point.speed:=RoundTo(Values[7].ToDouble * 1.852, -2);
-      Point.course:=Values[8].ToDouble;
-
-      deg:=Copy(Values[3], 1, 2);
-      min:=Copy(Values[3], 3, Length(Values[3]));
-
-      Point.lat:=RoundTo(deg.ToDouble + (min.ToDouble / 60), -6);
-      if Values[4] = 'S' then Point.lat:=-Point.lat;
-
-      deg:=Copy(Values[5], 1, 3);
-      min:=Copy(Values[5], 4, Length(Values[5]));
-
-      Point.lon:=RoundTo(deg.ToDouble + (min.ToDouble / 60), -6);
-      if Values[6] = 'S' then Point.lon:=-Point.lon;
-
       Point.ptype:=Values[2];
+
+      if Point.ptype = 'A' then
+      begin
+        Point.speed:=RoundTo(Values[7].ToDouble * 1.852, -2);
+        Point.course:=Values[8].ToDouble;
+
+        deg:=Copy(Values[3], 1, 2);
+        min:=Copy(Values[3], 3, Length(Values[3]));
+
+        Point.lat:=RoundTo(deg.ToDouble + (min.ToDouble / 60), -6);
+        if Values[4] = 'S' then Point.lat:=-Point.lat;
+
+        deg:=Copy(Values[5], 1, 3);
+        min:=Copy(Values[5], 4, Length(Values[5]));
+
+        Point.lon:=RoundTo(deg.ToDouble + (min.ToDouble / 60), -6);
+        if Values[6] = 'S' then Point.lon:=-Point.lon;
+      end else
+      begin
+        Point.speed:=0;
+        Point.course:=0;
+        Point.lat:=0;
+        Point.lon:=0;
+      end;
 
       if Point <> PrevPoint then
       begin

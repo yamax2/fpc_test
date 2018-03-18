@@ -10,10 +10,14 @@ type
 
   { TPlayerOptions }
 
+  TPlayerLogOption = (ploExtractor, ploDB);
+  TPlayerLogOptions = set of TPlayerLogOption;
+
   TPlayerOptions = class
   private class var
     FOptions: TPlayerOptions;
   private
+    FLogOptions: TPlayerLogOptions;
     FTempDir: String;
     procedure SetTempDir(AValue: String);
   public
@@ -23,6 +27,8 @@ type
     class property Options: TPlayerOptions read FOptions;
   published
     property TempDir: String read FTempDir write SetTempDir;
+    property LogOptions: TPlayerLogOptions
+      read FLogOptions write FLogOptions default [];
   end;
 
   function opts: TPlayerOptions;

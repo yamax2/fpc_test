@@ -54,12 +54,14 @@ end;
 class destructor TPlayerLogger.ClassDestroy;
 begin
   DoneCriticalsection(FCriticalSection);
-  CloseFile(FFile);
+  if FPrepared then CloseFile(FFile);
   inherited;
 end;
 
 class procedure TPlayerLogger.Log(const AMsg: String);
 begin
+  if not (ploExtractor in opts.LogOptions) then Exit;
+
   EnterCriticalsection(FCriticalSection);
   try
     if not FPrepared then Prepare;
