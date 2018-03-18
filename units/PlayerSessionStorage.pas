@@ -18,7 +18,7 @@ type
 
   { TPlayerPoint }
 
-  TPlayerPoint = record
+  TPlayerPoint = packed record
     rn: Integer;
     lat, lon: Double;
     time: TDateTime;

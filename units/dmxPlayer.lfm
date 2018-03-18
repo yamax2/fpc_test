@@ -9,6 +9,7 @@ object dmPlayer: TdmPlayer
     LoginPrompt = False
     KeepConnection = False
     Transaction = Transaction
+    OnLog = ConnectionLog
     Options = []
     left = 32
     top = 8

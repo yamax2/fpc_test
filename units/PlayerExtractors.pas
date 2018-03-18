@@ -31,7 +31,7 @@ type
     procedure PrepareSession;
     procedure PrepareTempDir(const ATempDir: String);
   public
-    constructor Create(AFileList: TStringList; const ATempDir: String);
+    constructor Create(AFileList: TStringList);
     destructor Destroy; override;
 
     function LoadData: TThread;
@@ -88,7 +88,7 @@ type
 implementation
 
 uses
-  FileUtil, crc;
+  FileUtil, crc, PlayerLogger, PlayerOptions;
 
 { TPlayerExtractorThread }
 
@@ -104,6 +104,8 @@ begin
   FDataFile:=Format('%ssubtitles_%d.data', [Extractor.TempDir, FIndex]);
   Service:=TPlayerSubtitleFfmpegExtractor.Create(Extractor[FIndex], FDataFile);
   try
+    logger.Log('extracting track in session %s, %d(%s) into %s',
+      [Extractor.FSessionID, FIndex, Extractor[FIndex], FDataFile]);
     Service.Extract;
   finally
     Service.Free;
@@ -116,6 +118,8 @@ var
 begin
   Service:=TPlayerNmeaTrackParser.Create(FDataFile, Self);
   try
+    logger.Log('parsing track in session %s, %d (%s)',
+      [Extractor.FSessionID, FIndex, FDataFile]);
     Service.OnSave:=@SavePoints;
     Service.Parse;
   finally
@@ -128,6 +132,8 @@ procedure TPlayerExtractorThread.SavePoints(Sender: TPlayerTrackParser;
 begin
   EnterCriticalsection(Manager.FCriticalSection);
   try
+    logger.Log('saving track points in session %s, %d, points: %d',
+      [Extractor.FSessionID, FIndex, Length(Points)]);
     Extractor.FStorage.AddPoints(Extractor.SessionID, FIndex, Points);
   finally
     LeaveCriticalsection(Manager.FCriticalSection);
@@ -141,8 +147,17 @@ end;
 
 procedure TPlayerExtractorThread.Execute;
 begin
-  if not Terminated then ExtractTrack;
-  if not Terminated then ParseTrack;
+  try
+    if not Terminated then ExtractTrack;
+    if not Terminated then ParseTrack;
+  except
+    on E: Exception do
+    begin
+      logger.Log('error on extractor thread %d, session %s, text: %s',
+        [FIndex, Extractor.FSessionID, E.Message]);
+      raise;
+    end;
+  end;
 end;
 
 constructor TPlayerExtractorThread.Create(AManager: TPlayerExtractorManager;
@@ -158,6 +173,8 @@ function TPlayerExtractorManager.GetNextThread: TPlayerThread;
 begin
   if not (FCount < Extractor.Count) then Result:=nil else
   begin
+    logger.Log('starting new extractor thread: %d for session %s',
+      [FCount, Extractor.FSessionID]);
     Result:=TPlayerExtractorThread.Create(Self, FCount);
     Inc(FCount);
   end
@@ -173,6 +190,7 @@ end;
 
 destructor TPlayerExtractorManager.Destroy;
 begin
+  logger.Log('finalizing session %s', [FExtractor.FSessionID]);
   FExtractor.FStorage.FinalizeSession(FExtractor.FSessionID);
   DeleteDirectory(FExtractor.FTempDir, False);
   Extractor.FLoaded:=True;
@@ -197,25 +215,36 @@ begin
   Delete(FSessionID, 1, 1);
   Delete(FSessionID, Length(FSessionID), 1);
 
+  logger.Log('new session: %s', [FSessionID]);
   FTempDir:=IncludeTrailingPathDelimiter(FTempDir + FSessionID);
+  logger.Log('session dir: %s', [FTempDir]);
   ForceDirectories(FTempDir);
 end;
 
 procedure TPlayerInfoExtractor.PrepareTempDir(const ATempDir: String);
+var
+  db: String;
 begin
   FTempDir:=IncludeTrailingPathDelimiter(ATempDir);
+  logger.Log('temp dir: %s', [FTempDir]);
   ForceDirectories(FTempDir);
-  FStorage:=TPlayerSessionStorage.Create(FTempDir + 'player.db');
+
+  db:=FTempDir + 'player.db';
+  logger.Log('database: %s', [db]);
+  FStorage:=TPlayerSessionStorage.Create(db);
 end;
 
-constructor TPlayerInfoExtractor.Create(AFileList: TStringList;
-  const ATempDir: String);
+constructor TPlayerInfoExtractor.Create(AFileList: TStringList);
 var
   FileItemName: String;
   FileItemData: TPlayerFileInfo;
+
+  Index: Integer;
 begin
   inherited Create;
   FLoaded:=False;
+
+  logger.Log('extractor started');
 
   FList:=TPlayerFileList.Create;
   for FileItemName in AFileList do
@@ -224,11 +253,19 @@ begin
       FileAge(FileItemName, FileItemData.CreatedAt);
       FileItemData.Size:=FileUtil.FileSize(FileItemName);
 
-      FList.Add(FileItemName, FileItemData);
+      Index:=FList.Add(FileItemName, FileItemData);
+
+      logger.Log('File added "%s", created_at %s, size: %d, index: %d',
+         [FileItemName,
+          FormatDateTime(PLAYER_DATE_FORMAT, FileItemData.CreatedAt),
+          FileItemData.Size,
+          Index
+         ]);
     end;
 
-  PrepareTempDir(ATempDir);
-  if not FindSession then PrepareSession else FLoaded:=True;
+  PrepareTempDir(opts.TempDir);
+  FLoaded:=FindSession;
+  if not FLoaded then PrepareSession;
 end;
 
 function TPlayerInfoExtractor.FindSession: Boolean;
@@ -254,8 +291,10 @@ begin
 
     FCrc32:=IntToHex(CrcValue, 8);
     FSessionID:=FStorage.FindSession(FCrc32, FList.Count);
+    logger.Log('find session: %s', [FCrc32]);
 
     Result:=FSessionID <> '';
+    logger.Log('session exists: %s', [BoolToStr(Result, 'yes', 'no')]);
   finally
     List.Free;
   end;
@@ -281,6 +320,7 @@ destructor TPlayerInfoExtractor.Destroy;
 begin
   FStorage.Free;
   FList.Free;
+  logger.Log('extractor finished');
   inherited;
 end;
 
@@ -290,6 +330,8 @@ begin
 
   if not Loaded then
   begin
+    logger.Log('loading session: %s', [FSessionID]);
+
     FStorage.AddSession(FSessionID, FCrc32, FList);
     Result:=TPlayerExtractorManager.Create(Self);
   end;
