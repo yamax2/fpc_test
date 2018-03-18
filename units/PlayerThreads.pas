@@ -64,7 +64,7 @@ constructor TPlayerThread.Create(AManager: TPlayerThreadManager);
 begin
   FManager:=AManager;
   inherited Create(True);
-  FreeOnTerminate:=True;
+  FreeOnTerminate:=False;
 end;
 
 destructor TPlayerThread.Destroy;
@@ -100,7 +100,12 @@ var
 begin
  List:=FList.LockList;
  try
-   if AFinishedThread <> nil then List.Remove(AFinishedThread);
+   if AFinishedThread <> nil then
+   begin
+     List.Remove(AFinishedThread);
+     AFinishedThread.Free;
+   end;
+
    if not (List.Count < MaxThreadCount) or Terminated then Exit;
 
    repeat
@@ -135,7 +140,7 @@ begin
 
   FForceTerminated:=False;
   inherited Create(False);
-  FreeOnTerminate:=True;
+  FreeOnTerminate:=False;
 end;
 
 destructor TPlayerThreadManager.Destroy;
@@ -196,7 +201,6 @@ begin
    AList.UnlockList;
  end;
 
- // TODO: fix runtime error
  for Index:=0 to Length(Handles) - 1 do
    WaitForThreadTerminate(Handles[Index], 0);
 end;

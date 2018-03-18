@@ -68,6 +68,7 @@ type
     FCount: Integer;
     FCriticalSection: TRTLCriticalSection;
   protected
+    procedure Execute; override;
     function GetNextThread: TPlayerThread; override;
   public
     constructor Create(AExtractor: TPlayerInfoExtractor);
@@ -190,6 +191,20 @@ end;
 
 { TPlayerExtractorManager }
 
+procedure TPlayerExtractorManager.Execute;
+begin
+  inherited;
+
+  if not (FCount < Extractor.Count) then
+  begin
+    logger.Log('finalizing session %s', [FExtractor.FSessionID]);
+    FExtractor.FStorage.FinalizeSession(FExtractor.FSessionID);
+    Extractor.FLoaded:=True;
+  end;
+
+  Synchronize(@FExtractor.DoFinish);
+end;
+
 function TPlayerExtractorManager.GetNextThread: TPlayerThread;
 begin
   if not (FCount < Extractor.Count) then Result:=nil else
@@ -211,16 +226,8 @@ end;
 
 destructor TPlayerExtractorManager.Destroy;
 begin
-  if not (FCount < Extractor.Count) then
-  begin
-    logger.Log('finalizing session %s', [FExtractor.FSessionID]);
-    FExtractor.FStorage.FinalizeSession(FExtractor.FSessionID);
-    Extractor.FLoaded:=True;
-  end;
-
   DeleteDirectory(FExtractor.FTempDir, False);
   DoneCriticalsection(FCriticalSection);
-  Synchronize(@FExtractor.DoFinish);
   inherited;
 end;
 

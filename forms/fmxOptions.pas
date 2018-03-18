@@ -84,13 +84,20 @@ begin
   try
     if not FExtractor.Loaded then
       with TfmProgress.Create(Self) do
-      begin
+      try
         TrackCount:=FExtractor.Count;
         FExtractor.OnFinish:=@ProcessFinished;
         FExtractor.OnProcess:=@Processed;
 
         Manager:=FExtractor.LoadData;
-        ShowModal;
+        try
+          ShowModal;
+          Manager.WaitFor;
+        finally
+          Manager.Free;
+        end;
+      finally
+        Free;
       end;
 
     if not FExtractor.Loaded then Exit;
