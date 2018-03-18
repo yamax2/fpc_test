@@ -1,0 +1,38 @@
+object fmProgress: TfmProgress
+  Left = 808
+  Height = 83
+  Top = 601
+  Width = 522
+  BorderIcons = [biMinimize, biMaximize]
+  BorderStyle = bsDialog
+  Caption = 'Loading...'
+  ClientHeight = 83
+  ClientWidth = 522
+  OnClose = FormClose
+  LCLVersion = '1.8.0.4'
+  object ProgressBar: TProgressBar
+    Left = 0
+    Height = 44
+    Top = 39
+    Width = 522
+    Align = alBottom
+    TabOrder = 0
+  end
+  object lbInfo: TLabel
+    Left = 8
+    Height = 1
+    Top = 12
+    Width = 1
+    ParentColor = False
+  end
+  object btStop: TBitBtn
+    Left = 409
+    Height = 30
+    Top = 6
+    Width = 107
+    Anchors = [akTop, akRight]
+    Caption = 'Stop'
+    OnClick = btStopClick
+    TabOrder = 1
+  end
+end

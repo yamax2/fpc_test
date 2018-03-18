@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="10"/>
+    <BuildModes Active="Debug"/>
+    <Units Count="24">
+      <Unit0>
+        <Filename Value="dpl.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="37" Y="29"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="forms/fmxOptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fmOptions"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="64"/>
+        <CursorPos X="30" Y="173"/>
+        <UsageCount Value="29"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="forms/fmxMain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="29"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="fmxmain.pas"/>
+        <ComponentName Value="fmMain"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fmxMain"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="18" Y="38"/>
+        <UsageCount Value="19"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="fmxoptions.pas"/>
+        <ComponentName Value="fmOptions"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fmxOptions"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="22"/>
+        <CursorPos X="14" Y="80"/>
+        <UsageCount Value="19"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="/usr/lib/lazarus/1.8.0/components/lazutils/fileutil.pas"/>
+        <UnitName Value="FileUtil"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="226"/>
+        <CursorPos X="11" Y="251"/>
+        <UsageCount Value="9"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="forms/fmxmain.pas"/>
+        <HasResources Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="19"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="forms/fmxoptions.pas"/>
+        <HasResources Value="True"/>
+        <UnitName Value="fmxOptions"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="55"/>
+        <CursorPos X="43" Y="79"/>
+        <UsageCount Value="19"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="units/CpuCount.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="29"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="units/dmxPlayer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="dmPlayer"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="12"/>
+        <UsageCount Value="29"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="167"/>
+        <CursorPos X="3" Y="169"/>
+        <UsageCount Value="29"/>
+        <Bookmarks Count="1">
+          <Item0 X="20" Y="237" ID="1"/>
+        </Bookmarks>
+      </Unit10>
+      <Unit11>
+        <Filename Value="units/PlayerLogger.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="29"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="units/PlayerOptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3"/>
+        <CursorPos X="22" Y="27"/>
+        <UsageCount Value="29"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="units/PlayerSessionStorage.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="23"/>
+        <CursorPos X="77" Y="25"/>
+        <UsageCount Value="29"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="units/PlayerSubtitleExtractors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="37"/>
+        <CursorPos X="52" Y="183"/>
+        <UsageCount Value="29"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="163"/>
+        <CursorPos X="6" Y="195"/>
+        <UsageCount Value="29"/>
+        <Bookmarks Count="1">
+          <Item0 X="6" Y="195" ID="1"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="forms/fmxprogress.pas"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fmxProgress"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="89" Y="12"/>
+        <UsageCount Value="19"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="forms/fmxProgress.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fmProgress"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="31"/>
+        <CursorPos X="51" Y="30"/>
+        <UsageCount Value="28"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="/usr/lib/lazarus/1.8.0/lcl/forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="43"/>
+        <CursorPos X="25" Y="69"/>
+        <UsageCount Value="9"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/classes/classesh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1691"/>
+        <CursorPos X="14" Y="1715"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/inc/threadh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="118"/>
+        <CursorPos X="11" Y="151"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/unix/tthread.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="232"/>
+        <CursorPos X="3" Y="234"/>
+        <UsageCount Value="10"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="/usr/share/fpcsrc/3.0.2/packages/fcl-base/src/custapp.pp"/>
+        <UnitName Value="CustApp"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="3" Y="25"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/classes/classes.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="241"/>
+        <CursorPos X="3" Y="243"/>
+        <UsageCount Value="10"/>
+      </Unit23>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="140" Column="18" TopLine="98"/>
+      </Position1>
+      <Position2>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="191" TopLine="154"/>
+      </Position2>
+      <Position3>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="30"/>
+      </Position3>
+      <Position4>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="103" Column="2" TopLine="98"/>
+      </Position4>
+      <Position5>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="30" Column="15" TopLine="5"/>
+      </Position5>
+      <Position6>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="103" Column="22" TopLine="98"/>
+      </Position6>
+      <Position7>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="30" Column="62" TopLine="23"/>
+      </Position7>
+      <Position8>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="98" Column="55" TopLine="56"/>
+      </Position8>
+      <Position9>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Column="62"/>
+      </Position9>
+      <Position10>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="30" Column="38"/>
+      </Position10>
+      <Position11>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="98" Column="55" TopLine="56"/>
+      </Position11>
+      <Position12>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="202" Column="20" TopLine="161"/>
+      </Position12>
+      <Position13>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="192" Column="13" TopLine="161"/>
+      </Position13>
+      <Position14>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="52" Column="27" TopLine="13"/>
+      </Position14>
+      <Position15>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="75" Column="3" TopLine="71"/>
+      </Position15>
+      <Position16>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="52" Column="28" TopLine="15"/>
+      </Position16>
+      <Position17>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="66" Column="22" TopLine="64"/>
+      </Position17>
+      <Position18>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="33" Column="26" TopLine="28"/>
+      </Position18>
+      <Position19>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="133" Column="2" TopLine="129"/>
+      </Position19>
+      <Position20>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="195" Column="13" TopLine="163"/>
+      </Position20>
+      <Position21>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="39" Column="21" TopLine="14"/>
+      </Position21>
+      <Position22>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="195" Column="13" TopLine="163"/>
+      </Position22>
+      <Position23>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="39" Column="68" TopLine="14"/>
+      </Position23>
+      <Position24>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="195" Column="13" TopLine="163"/>
+      </Position24>
+      <Position25>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="86" Column="25" TopLine="61"/>
+      </Position25>
+      <Position26>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="181" Column="21" TopLine="156"/>
+      </Position26>
+      <Position27>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="37" Column="35" TopLine="13"/>
+      </Position27>
+      <Position28>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="176" Column="3" TopLine="163"/>
+      </Position28>
+      <Position29>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="38" Column="23" TopLine="12"/>
+      </Position29>
+      <Position30>
+        <Filename Value="units/PlayerThreads.pas"/>
+        <Caret Line="133" TopLine="69"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectSession>
+</CONFIG>

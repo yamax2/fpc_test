@@ -31,13 +31,14 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Interrupt(const Force: Boolean = False);
+    procedure Interrupt(const Force: Boolean = False); virtual;
 
     class constructor ClassCreate;
     class destructor ClassDestroy;
     class procedure WaitForThreadList(AList: TThreadList;
       const AForceTerminate: Boolean = False);
 
+    property ThreadList: TThreadList read FList;
     property MaxThreadCount: Integer read FMaxThreadCount;
   end;
 
@@ -76,10 +77,10 @@ end;
 
 procedure TPlayerThreadManager.Execute;
 begin
- Process;
- RtlEventWaitFor(FEvent);
- Terminate;
- WaitForThreadList(FList, FForceTerminated);
+  Process;
+  RtlEventWaitFor(FEvent);
+  Terminate;
+  WaitForThreadList(FList, FForceTerminated);
 end;
 
 function TPlayerThreadManager.GetNextThread: TPlayerThread;
@@ -178,20 +179,24 @@ var
   List: TList;
   Handles: array of TThreadID;
   Index: Integer;
+
+  CurThread: TThread;
 begin
  List:=AList.LockList;
  try
    SetLength(Handles, List.Count);
    for Index:=0 to List.Count - 1 do
    begin
-     Handles[Index]:=TThread(List[Index]).Handle;
-     if AForceTerminate then
-       TThread(List[Index]).Terminate;
+     CurThread:=TThread(List[Index]);
+     Handles[Index]:=CurThread.Handle;
+
+     if AForceTerminate then CurThread.Terminate;
    end;
  finally
    AList.UnlockList;
  end;
 
+ // TODO: fix runtime error
  for Index:=0 to Length(Handles) - 1 do
    WaitForThreadTerminate(Handles[Index], 0);
 end;

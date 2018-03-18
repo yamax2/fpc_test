@@ -13,7 +13,7 @@ type
   TPlayerLogOption = (ploExtractor, ploDB);
   TPlayerLogOptions = set of TPlayerLogOption;
 
-  TPlayerOptions = class
+  TPlayerOptions = class(TPersistent)
   private class var
     FOptions: TPlayerOptions;
   private

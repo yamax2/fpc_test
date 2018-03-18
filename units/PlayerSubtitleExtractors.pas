@@ -5,14 +5,24 @@ unit PlayerSubtitleExtractors;
 interface
 
 uses
-  Classes, SysUtils, PlayerThreads, PlayerSessionStorage;
+  Classes, SysUtils, Process, PlayerThreads, PlayerSessionStorage;
 
 type
-  TPlayerSubtitleExtractorClass = class of TPlayerSubtitleExtractor;
+
+  { TPlayerExtractorService }
+
+  TPlayerExtractorService = class
+  private
+    FProcess: TProcess;
+  public
+    procedure StopProcess;
+
+    property Process: TProcess read FProcess;
+  end;
 
   { TPlayerSubtitleExtractor }
 
-  TPlayerSubtitleExtractor = class // mp4 -> raw subtitle file
+  TPlayerSubtitleExtractor = class(TPlayerExtractorService) // mp4 -> raw subtitle file
   private
     FFileName, FTempFileName: String;
   public
@@ -34,7 +44,7 @@ type
   TPlayerTrackParser = class;
   TPlayerTrackParserSaveEvent = procedure (Sender: TPlayerTrackParser;
     Points: TPlayerPointArray) of object;
-  TPlayerTrackParser = class  // raw subtitle -> nmea -> track
+  TPlayerTrackParser = class(TPlayerExtractorService)  // raw subtitle -> nmea -> track
   private
     FFileName: String;
     FOnSave: TPlayerTrackParserSaveEvent;
@@ -65,7 +75,15 @@ type
 
 implementation
 uses
-  Process, dateutils, Math;
+  dateutils, Math;
+
+{ TPlayerExtractorService }
+
+procedure TPlayerExtractorService.StopProcess;
+begin
+  if (FProcess <> nil) and FProcess.Running then
+    FProcess.Terminate(0);
+end;
 
 { TPlayerNmeaTrackParser }
 
@@ -152,14 +170,13 @@ procedure TPlayerNmeaTrackParser.Parse;
 const
   BUF_SIZE = 16384;
 var
-  Process: TProcess;
   OutputStream: TFileStream;
   Buffer: array[0..BUF_SIZE - 1] of Byte;
   BytesRead: LongInt;
 begin
   FTempFileName:=FFileName + '.nmea';
 
-  Process:=TProcess.Create(nil);
+  FProcess:=TProcess.Create(nil);
   try
     with Process do
     begin
@@ -187,9 +204,11 @@ begin
     end;
 
     LoadNmea;
-    Process.Terminate(0);
+    if Process.Running then
+      Process.Terminate(0);
   finally
     Process.Free;
+    FProcess:=nil;
   end;
 end;
 
@@ -213,10 +232,8 @@ end;
 { TPlayerSubtitleFfmpegExtractor }
 
 procedure TPlayerSubtitleFfmpegExtractor.Extract;
-var
-  Process: TProcess;
 begin
-  Process:=TProcess.Create(nil);
+  FProcess:=TProcess.Create(nil);
   try
     with Process do
     begin
@@ -241,6 +258,7 @@ begin
     Process.Execute;
   finally
     Process.Free;
+    FProcess:=nil;
   end;
 end;
 

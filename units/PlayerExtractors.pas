@@ -15,14 +15,19 @@ uses
 type
   { TPlayerInfoExtractor }
 
+  TPlayerExtractorProcessEvent = procedure(Sender: TObject;
+    const AProcessedCount: Integer) of object;
   TPlayerInfoExtractor = class
   private
     FList: TPlayerFileList;
     FLoaded: Boolean;
+    FOnFinish: TNotifyEvent;
+    FOnProcess: TPlayerExtractorProcessEvent;
     FSessionID: String;
     FTempDir: String;
     FCrc32: String;
     FStorage: TPlayerSessionStorage;
+    FProcessedCount: Integer;
     function FindSession: Boolean;
     function GetCount: Integer;
     function GetFileInfo(const Index: Integer): TPlayerFileInfo;
@@ -30,11 +35,14 @@ type
     function GetFileName(const Index: Integer): String;
     procedure PrepareSession;
     procedure PrepareTempDir(const ATempDir: String);
+  protected
+    procedure DoFinish; virtual;
+    procedure DoProcess; virtual;
   public
-    constructor Create(AFileList: TStringList);
+    constructor Create(AFileList: TStrings);
     destructor Destroy; override;
 
-    function LoadData: TThread;
+    function LoadData: TPlayerThreadManager;
 
     property Count: Integer read GetCount;
     property FileName[Index: Integer]: String read GetFileName; default;
@@ -46,6 +54,10 @@ type
     property Loaded: Boolean read FLoaded;
     property SessionID: String read FSessionID;
     property TempDir: String read FTempDir;
+
+    property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
+    property OnProcess: TPlayerExtractorProcessEvent
+      read FOnProcess write FOnProcess;
   end;
 
   { TPlayerExtractorManager }
@@ -61,6 +73,8 @@ type
     constructor Create(AExtractor: TPlayerInfoExtractor);
     destructor Destroy; override;
 
+    procedure Interrupt(const Force: Boolean = False); override;
+
     property Extractor: TPlayerInfoExtractor read FExtractor;
   end;
 
@@ -70,6 +84,7 @@ type
   private
     FIndex: Integer;
     FDataFile: String;
+    FService: TPlayerExtractorService;
     function GetExtractor: TPlayerInfoExtractor;
     function GetManager: TPlayerExtractorManager;
     procedure ExtractTrack;
@@ -104,11 +119,13 @@ begin
   FDataFile:=Format('%ssubtitles_%d.data', [Extractor.TempDir, FIndex]);
   Service:=TPlayerSubtitleFfmpegExtractor.Create(Extractor[FIndex], FDataFile);
   try
+    FService:=Service;
     logger.Log('extracting track in session %s, %d(%s) into %s',
       [Extractor.FSessionID, FIndex, Extractor[FIndex], FDataFile]);
     Service.Extract;
   finally
     Service.Free;
+    FService:=nil;
   end;
 end;
 
@@ -118,12 +135,14 @@ var
 begin
   Service:=TPlayerNmeaTrackParser.Create(FDataFile, Self);
   try
+    FService:=Service;
     logger.Log('parsing track in session %s, %d (%s)',
       [Extractor.FSessionID, FIndex, FDataFile]);
     Service.OnSave:=@SavePoints;
     Service.Parse;
   finally
     Service.Free;
+    FService:=nil;
   end;
 end;
 
@@ -150,6 +169,8 @@ begin
   try
     if not Terminated then ExtractTrack;
     if not Terminated then ParseTrack;
+    if not Terminated then
+      Synchronize(@Extractor.DoProcess);
   except
     on E: Exception do
     begin
@@ -163,8 +184,8 @@ end;
 constructor TPlayerExtractorThread.Create(AManager: TPlayerExtractorManager;
   const AIndex: Integer);
 begin
- inherited Create(AManager);
- FIndex:=AIndex;
+  inherited Create(AManager);
+  FIndex:=AIndex;
 end;
 
 { TPlayerExtractorManager }
@@ -190,12 +211,40 @@ end;
 
 destructor TPlayerExtractorManager.Destroy;
 begin
-  logger.Log('finalizing session %s', [FExtractor.FSessionID]);
-  FExtractor.FStorage.FinalizeSession(FExtractor.FSessionID);
+  if not (FCount < Extractor.Count) then
+  begin
+    logger.Log('finalizing session %s', [FExtractor.FSessionID]);
+    FExtractor.FStorage.FinalizeSession(FExtractor.FSessionID);
+    Extractor.FLoaded:=True;
+  end;
+
   DeleteDirectory(FExtractor.FTempDir, False);
-  Extractor.FLoaded:=True;
   DoneCriticalsection(FCriticalSection);
+  Synchronize(@FExtractor.DoFinish);
   inherited;
+end;
+
+procedure TPlayerExtractorManager.Interrupt(const Force: Boolean);
+var
+  List: TList;
+  Index: Integer;
+
+  CurThread: TPlayerExtractorThread;
+begin
+  inherited;
+
+  if not Force then Exit;
+  List:=ThreadList.LockList;
+  try
+    for Index:=0 to List.Count - 1 do
+    begin
+      CurThread:=TPlayerExtractorThread(List[Index]);
+      if CurThread.FService <> nil then
+        CurThread.FService.StopProcess;
+    end;
+  finally
+    ThreadList.UnlockList;
+  end;
 end;
 
 { TPlayerInfoExtractor }
@@ -234,7 +283,20 @@ begin
   FStorage:=TPlayerSessionStorage.Create(db);
 end;
 
-constructor TPlayerInfoExtractor.Create(AFileList: TStringList);
+procedure TPlayerInfoExtractor.DoFinish;
+begin
+  if @FOnFinish <> nil then
+    FOnFinish(Self);
+end;
+
+procedure TPlayerInfoExtractor.DoProcess;
+begin
+  Inc(FProcessedCount);
+  if @FOnProcess <> nil then
+    FOnProcess(Self, FProcessedCount);
+end;
+
+constructor TPlayerInfoExtractor.Create(AFileList: TStrings);
 var
   FileItemName: String;
   FileItemData: TPlayerFileInfo;
@@ -324,12 +386,13 @@ begin
   inherited;
 end;
 
-function TPlayerInfoExtractor.LoadData: TThread;
+function TPlayerInfoExtractor.LoadData: TPlayerThreadManager;
 begin
   Result:=nil;
 
   if not Loaded then
   begin
+    FProcessedCount:=0;
     logger.Log('loading session: %s', [FSessionID]);
 
     FStorage.AddSession(FSessionID, FCrc32, FList);

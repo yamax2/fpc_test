@@ -1,11 +1,12 @@
 ads.csv
 1.txt
 test
-test.dbg
-test.o
+*.dbg
+*.o
 lib
 backup
 tmp
 sqlite/*.so
 sqlite/*.dll
 sqlite/extension-functions.c
+dpl
