@@ -404,6 +404,8 @@ begin
 
     FStorage.AddSession(FSessionID, FCrc32, FList);
     Result:=TPlayerExtractorManager.Create(Self);
+
+    Result.Start;
   end;
 end;
 

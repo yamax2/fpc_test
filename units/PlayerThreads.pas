@@ -18,11 +18,10 @@ type
 
   TPlayerThreadManager = class(TThread)
   private
-    FEvent: pRTLEvent;
+    FEvent, FStopEvent: pRTLEvent;
     FList: TThreadList;
     FForceTerminated: Boolean;
     FMaxThreadCount: Integer;
-    class var FManagers: TThreadList;
   protected
     procedure Execute; override;
     function GetNextThread: TPlayerThread; virtual;
@@ -33,10 +32,6 @@ type
     destructor Destroy; override;
     procedure Interrupt(const Force: Boolean = False); virtual;
 
-    class constructor ClassCreate;
-    class destructor ClassDestroy;
-    class procedure WaitForThreadList(AList: TThreadList;
-      const AForceTerminate: Boolean = False);
 
     property ThreadList: TThreadList read FList;
     property MaxThreadCount: Integer read FMaxThreadCount;
@@ -62,9 +57,9 @@ implementation
 
 constructor TPlayerThread.Create(AManager: TPlayerThreadManager);
 begin
+  FreeOnTerminate:=True;
   FManager:=AManager;
   inherited Create(True);
-  FreeOnTerminate:=False;
 end;
 
 destructor TPlayerThread.Destroy;
@@ -76,11 +71,27 @@ end;
 { TPlayerThreadManager }
 
 procedure TPlayerThreadManager.Execute;
+var
+  List: TList;
+  Index: Integer;
 begin
   Process;
   RtlEventWaitFor(FEvent);
   Terminate;
-  WaitForThreadList(FList, FForceTerminated);
+
+  // WaitForThreadList(FList, FForceTerminated);
+  List:=FList.LockList;
+  try
+    if List.Count = 0 then Exit;
+
+    if FForceTerminated then
+      for Index:=0 to List.Count - 1 do
+        TThread(List[Index]).Terminate;
+  finally
+    FList.UnlockList;
+  end;
+
+  RTLeventWaitFor(FStopEvent);
 end;
 
 function TPlayerThreadManager.GetNextThread: TPlayerThread;
@@ -97,65 +108,57 @@ procedure TPlayerThreadManager.Process(AFinishedThread: TPlayerThread);
 var
   List: TList;
   NextThread: TPlayerThread;
+
+  Stop: Boolean;
 begin
- List:=FList.LockList;
- try
-   if AFinishedThread <> nil then
-   begin
-     List.Remove(AFinishedThread);
-     AFinishedThread.Free;
-   end;
+  List:=FList.LockList;
+  try
+    Stop:=Terminated or not (List.Count < MaxThreadCount);
 
-   if not (List.Count < MaxThreadCount) or Terminated then Exit;
+    if AFinishedThread <> nil then
+    begin
+      List.Remove(AFinishedThread);
 
-   repeat
-     NextThread:=GetNextThread;
-     if NextThread <> nil then
-     begin
-       List.Add(NextThread);
-       NextThread.Start;
-     end;
-   until (NextThread = nil) or Terminated or not (List.Count < MaxThreadCount);
+      if List.Count = 0 then
+        RtlEventSetEvent(FStopEvent);
+    end;
 
-   if NextThread = nil then Interrupt;
- finally
-   FList.UnlockList;
- end;
+    if Stop then Exit;
+
+    repeat
+      NextThread:=GetNextThread;
+      if NextThread <> nil then
+      begin
+        List.Add(NextThread);
+        NextThread.Start;
+      end;
+    until (NextThread = nil) or Terminated or not (List.Count < MaxThreadCount);
+
+    if NextThread = nil then Interrupt;
+  finally
+    FList.UnlockList;
+  end;
 end;
 
 constructor TPlayerThreadManager.Create;
-var
-  List: TList;
 begin
   FMaxThreadCount:=GetMaxThreadCount;
   FList:=TThreadList.Create;
-  FEvent:=RTLEventCreate;
 
-  List:=FManagers.LockList;
-  try
-    List.Add(Self);
-  finally
-    FManagers.UnlockList;
-  end;
+  FEvent:=RTLEventCreate;
+  FStopEvent:=RTLEventCreate;
 
   FForceTerminated:=False;
-  inherited Create(False);
   FreeOnTerminate:=False;
+
+  inherited Create(True);
 end;
 
 destructor TPlayerThreadManager.Destroy;
-var
-  List: TList;
 begin
   FList.Free;
   RTLeventdestroy(FEvent);
-
-  List:=FManagers.LockList;
-  try
-    List.Remove(Self);
-  finally
-    FManagers.UnlockList;
-  end;
+  RTLeventdestroy(FStopEvent);
 
   inherited;
 end;
@@ -165,44 +168,6 @@ begin
   FForceTerminated:=Force;
   Terminate;
   RtlEventSetEvent(FEvent);
-end;
-
-class constructor TPlayerThreadManager.ClassCreate;
-begin
-  FManagers:=TThreadList.Create;
-end;
-
-class destructor TPlayerThreadManager.ClassDestroy;
-begin
-  WaitForThreadList(FManagers);
-  FManagers.Free;
-end;
-
-class procedure TPlayerThreadManager.WaitForThreadList(AList: TThreadList;
-  const AForceTerminate: Boolean);
-var
-  List: TList;
-  Handles: array of TThreadID;
-  Index: Integer;
-
-  CurThread: TThread;
-begin
- List:=AList.LockList;
- try
-   SetLength(Handles, List.Count);
-   for Index:=0 to List.Count - 1 do
-   begin
-     CurThread:=TThread(List[Index]);
-     Handles[Index]:=CurThread.Handle;
-
-     if AForceTerminate then CurThread.Terminate;
-   end;
- finally
-   AList.UnlockList;
- end;
-
- for Index:=0 to Length(Handles) - 1 do
-   WaitForThreadTerminate(Handles[Index], 0);
 end;
 
 end.

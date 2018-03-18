@@ -3,10 +3,10 @@ program dpl;
 {$mode objfpc}{$H+}
 
 uses
-  {$IFDEF UNIX}
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   cmem,
-  {$ENDIF}
+  {$ENDIF}{$ENDIF}
   Interfaces,
   Forms,
 
