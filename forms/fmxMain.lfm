@@ -1,8 +1,8 @@
 object fmMain: TfmMain
-  Left = 547
-  Height = 721
-  Top = 328
-  Width = 1244
+  Left = 492
+  Height = 689
+  Top = 233
+  Width = 1177
   Caption = 'fmMain'
   OnClose = FormClose
   LCLVersion = '1.8.0.4'

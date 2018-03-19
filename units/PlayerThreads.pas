@@ -79,7 +79,6 @@ begin
   RtlEventWaitFor(FEvent);
   Terminate;
 
-  // WaitForThreadList(FList, FForceTerminated);
   List:=FList.LockList;
   try
     if List.Count = 0 then Exit;

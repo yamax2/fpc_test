@@ -25,6 +25,9 @@ type
     destructor Destroy; override;
   end;
 
+var
+  dmPlayer: TdmPlayer;
+
 implementation
 uses
   PlayerSessionStorage, PlayerOptions;
@@ -53,6 +56,7 @@ end;
 
 destructor TdmPlayer.Destroy;
 begin
+  Connection.Close(True);
   CloseFile(FLogFile);
   inherited;
 end;

@@ -18,6 +18,7 @@ uses
   dmxPlayer,
   PlayerOptions,
   PlayerLogger,
+  PlayerGPX,
   PlayerSessionStorage,
 
   // forms

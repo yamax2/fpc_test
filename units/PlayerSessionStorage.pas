@@ -34,12 +34,11 @@ type
   TPlayerSessionStorage = class
   private
     FDataFile: String;
-    FData: TdmPlayer;
+    procedure GenerateGpx(const ASessionID: String);
     procedure PrepareDataModule;
     procedure PrepareDatabase;
   public
     constructor Create(ADataFile: String); virtual;
-    destructor Destroy; override;
 
     procedure AddSession(const ASessionId, crc32: String;
       Files: TPlayerFileList);
@@ -50,11 +49,12 @@ type
     function FindSession(const crc32: String; const FilesCount: Integer): String;
   end;
 
+  procedure LoadTextFromResource(AList: TStrings; const ResourceName: String);
   operator = (A, B: TPlayerPoint) R: Boolean;
 
 implementation
 uses
-  sqlite3;
+  sqlite3, Forms, PlayerGPX;
 
 {$R sql.rc}
 
@@ -79,17 +79,49 @@ end;
 
 { TPlayerSessionStorage }
 
+procedure TPlayerSessionStorage.GenerateGpx(const ASessionID: String);
+var
+  ids: array of Integer;
+  id: Integer;
+begin
+  with dmPlayer do
+  begin
+    Query.SQL.Text:='select rowid id from trips where session_id = :session_id';
+    Query.ParamByName('session_id').AsString:=ASessionID;
+    Query.Open;
+    try
+      SetLength(ids, 0);
+      while not Query.EOF do
+      begin
+        SetLength(ids, Length(ids) + 1);
+        ids[High(ids)]:=Query.FieldByName('id').AsInteger;
+        Query.Next;
+      end;
+    finally
+      Query.Close;
+    end;
+
+    for id in ids do
+      with TPlayerGPX.Create(ASessionID, id) do
+      try
+        Convert;
+      finally
+        Free;
+      end;
+  end;
+end;
+
 procedure TPlayerSessionStorage.PrepareDataModule;
 begin
-  FData.Connection.DatabaseName:=FDataFile;
+  dmPlayer.Connection.DatabaseName:=FDataFile;
 
   try
-    FData.Connection.Open;
+    dmPlayer.Connection.Open;
   except
     if FileExists(FDataFile) then DeleteFile(FDataFile);
   end;
 
-  with FData do
+  with dmPlayer do
   begin
     if not Connection.Connected then Connection.Open;
     PrepareDatabase;
@@ -98,7 +130,7 @@ end;
 
 procedure TPlayerSessionStorage.PrepareDatabase;
 begin
-  with FData do
+  with dmPlayer do
   begin
     // TODO: Connection.LoadConnection fails?
     sqlite3_enable_load_extension(Connection.Handle, 1);
@@ -117,15 +149,8 @@ begin
   inherited Create;
   FDataFile:=ADataFile;
 
-  FData:=TdmPlayer.Create(nil);
+  if dmPlayer = nil then dmPlayer:=TdmPlayer.Create(Application);
   PrepareDataModule;
-end;
-
-destructor TPlayerSessionStorage.Destroy;
-begin
-  FData.Connection.Close(True);
-  FData.Free;
-  inherited;
 end;
 
 procedure TPlayerSessionStorage.AddSession(const ASessionId, crc32: String;
@@ -133,7 +158,7 @@ procedure TPlayerSessionStorage.AddSession(const ASessionId, crc32: String;
 var
   Index: Integer;
 begin
-  with FData do
+  with dmPlayer do
   begin
     Script.Script.Clear;
 
@@ -161,7 +186,7 @@ var
 begin
   if Length(Points) = 0 then Exit;
 
-  with FData do
+  with dmPlayer do
   begin
     Query.SQL.Text:=Format(
       'select rowid id from tracks where session_id = %s and rn = %d limit 1',
@@ -197,7 +222,7 @@ function TPlayerSessionStorage.FindSession(const crc32: String;
 begin
   Result:='';
 
-  with FData do
+  with dmPlayer do
   try
     Query.SQL.Text:=Format('select id from sessions where crc32 = %s ' +
       'and cc = %d and loaded = 1 limit 1', [QuotedStr(crc32), FilesCount]);
@@ -214,7 +239,7 @@ var
   SQL: TStringArray;
   Index: Integer;
 begin
-  with FData do
+  with dmPlayer do
   begin
     LoadTextFromResource(Query.SQL, 'TRIPS');
     SQL:=Query.SQL.Text.Split(';');
@@ -229,6 +254,8 @@ begin
 
       Query.ExecSQL;
     end;
+
+    GenerateGpx(ASessionID);
 
     Script.Script.Text:=Format('update sessions set loaded = 1 where id = %s;',
       [QuotedStr(ASessionID)]);
