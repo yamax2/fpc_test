@@ -199,6 +199,7 @@ begin
   begin
     logger.Log('finalizing session %s', [FExtractor.FSessionID]);
     FExtractor.FStorage.FinalizeSession(FExtractor.FSessionID);
+    Extractor.FStorage.GenerateGpx(FExtractor.FSessionID);
     Extractor.FLoaded:=True;
   end;
 

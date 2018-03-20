@@ -1,3 +1,4 @@
 DB RCDATA "../sql/db.sql"
 TRIPS RCDATA "../sql/trips.sql"
 GPX RCDATA "../sql/gpx.sql"
+GPX_INFO RCDATA "../sql/gpx_info.sql"

@@ -34,7 +34,6 @@ type
   TPlayerSessionStorage = class
   private
     FDataFile: String;
-    procedure GenerateGpx(const ASessionID: String);
     procedure PrepareDataModule;
     procedure PrepareDatabase;
   public
@@ -47,6 +46,8 @@ type
 
     procedure FinalizeSession(const ASessionID: String);
     function FindSession(const crc32: String; const FilesCount: Integer): String;
+
+    procedure GenerateGpx(const ASessionId: String);
   end;
 
   procedure LoadTextFromResource(AList: TStrings; const ResourceName: String);
@@ -54,7 +55,7 @@ type
 
 implementation
 uses
-  sqlite3, Forms, PlayerGPX;
+  db, sqlite3, Forms, PlayerOptions, PlayerGPX;
 
 {$R sql.rc}
 
@@ -78,38 +79,6 @@ begin
 end;
 
 { TPlayerSessionStorage }
-
-procedure TPlayerSessionStorage.GenerateGpx(const ASessionID: String);
-var
-  ids: array of Integer;
-  id: Integer;
-begin
-  with dmPlayer do
-  begin
-    Query.SQL.Text:='select rowid id from trips where session_id = :session_id';
-    Query.ParamByName('session_id').AsString:=ASessionID;
-    Query.Open;
-    try
-      SetLength(ids, 0);
-      while not Query.EOF do
-      begin
-        SetLength(ids, Length(ids) + 1);
-        ids[High(ids)]:=Query.FieldByName('id').AsInteger;
-        Query.Next;
-      end;
-    finally
-      Query.Close;
-    end;
-
-    for id in ids do
-      with TPlayerGPX.Create(ASessionID, id) do
-      try
-        Convert;
-      finally
-        Free;
-      end;
-  end;
-end;
 
 procedure TPlayerSessionStorage.PrepareDataModule;
 begin
@@ -234,6 +203,48 @@ begin
   end;
 end;
 
+procedure TPlayerSessionStorage.GenerateGpx(const ASessionId: String);
+var
+  GpxFileName: String;
+  Id: Integer;
+begin
+  with dmPlayer do
+  begin
+    Query.SQL.Text:='select rowid, gpx from trips where session_id = :session_id';
+    Query.UpdateSQL.Text:='update trips set gpx = :gpx where rowid = :rowid;';
+
+    Query.ParamByName('session_id').AsString:=ASessionID;
+    Query.Open;
+    try
+      while not Query.EOF do
+      begin
+        Id:=Query.FieldByName('rowid').AsInteger;
+        GpxFileName:=IncludeTrailingPathDelimiter(opts.TempDir + ASessionId) +
+          Format('trip_%d.gpx', [Id]);
+
+        with TPlayerGPX.Create(Id, GpxFileName) do
+        try
+          Convert;
+
+          Query.Edit;
+          (Query.FieldByName('gpx') as TBlobField).LoadFromFile(GpxFileName);
+          Query.Post;
+
+          Query.ApplyUpdates;
+        finally
+          Free;
+        end;
+
+        Query.Next;
+      end;
+
+      Transaction.Commit;
+    finally
+      Query.Close;
+    end;
+  end;
+end;
+
 procedure TPlayerSessionStorage.FinalizeSession(const ASessionID: String);
 var
   SQL: TStringArray;
@@ -254,8 +265,6 @@ begin
 
       Query.ExecSQL;
     end;
-
-    GenerateGpx(ASessionID);
 
     Script.Script.Text:=Format('update sessions set loaded = 1 where id = %s;',
       [QuotedStr(ASessionID)]);

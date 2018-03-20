@@ -1,6 +1,7 @@
 # Dashcam Player Light
 
 # TODO:
+* check db version on start
 * win version
 * macos version
 * options editing

@@ -38,7 +38,8 @@ create table if not exists trips(
   distance real not null,      -- distance, km
   avg_speed real not null,     -- avg speed km/h
   size integer not null,       -- size of all files in bytes
-  start_id integer             -- first track id
+  start_id integer,            -- first track id
+  gpx blob
 );
 
 create index if not exists ix_points_track_id on points(track_id);

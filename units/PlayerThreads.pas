@@ -14,9 +14,14 @@ uses
 type
   TPlayerThread = class;
 
+  TCustomPlayerThread = class(TThread)
+  public
+    property Terminated;
+  end;
+
   { TPlayerThreadManager }
 
-  TPlayerThreadManager = class(TThread)
+  TPlayerThreadManager = class(TCustomPlayerThread)
   private
     FEvent, FStopEvent: pRTLEvent;
     FList: TThreadList;
@@ -35,11 +40,12 @@ type
 
     property ThreadList: TThreadList read FList;
     property MaxThreadCount: Integer read FMaxThreadCount;
+    property Terminated;
   end;
 
   { TPlayerThread }
 
-  TPlayerThread = class(TThread)
+  TPlayerThread = class(TCustomPlayerThread)
   private
     FManager: TPlayerThreadManager;
   public
