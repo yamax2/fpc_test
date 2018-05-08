@@ -1,5 +1,7 @@
 # Dashcam Player Light
 
+using https://prog.olsztyn.pl/paslibvlc/ v2.2.9
+
 # TODO:
 * check db version on start
 * win version
