@@ -10,4 +10,3 @@ sqlite/*.so
 sqlite/*.dll
 sqlite/extension-functions.c
 dpl
-vlc
