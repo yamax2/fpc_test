@@ -37,10 +37,8 @@ type
     destructor Destroy; override;
     procedure Interrupt(const Force: Boolean = False); virtual;
 
-
     property ThreadList: TThreadList read FList;
     property MaxThreadCount: Integer read FMaxThreadCount;
-    property Terminated;
   end;
 
   { TPlayerThread }
@@ -53,7 +51,6 @@ type
     destructor Destroy; override;
 
     property Manager: TPlayerThreadManager read FManager;
-    property Terminated;
   end;
 
 
@@ -106,7 +103,7 @@ end;
 
 function TPlayerThreadManager.GetMaxThreadCount: Integer;
 begin
- Result:=GetLogicalCpuCount;
+  Result:=GetLogicalCpuCount;
 end;
 
 procedure TPlayerThreadManager.Process(AFinishedThread: TPlayerThread);

@@ -3,13 +3,13 @@
   <ProjectSession>
     <Version Value="10"/>
     <BuildModes Active="Debug"/>
-    <Units Count="42">
+    <Units Count="43">
       <Unit0>
         <Filename Value="dpl.lpr"/>
         <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
         <CursorPos X="23" Y="26"/>
-        <UsageCount Value="90"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="92"/>
       </Unit0>
       <Unit1>
         <Filename Value="forms/fmxOptions.pas"/>
@@ -17,16 +17,13 @@
         <ComponentName Value="fmOptions"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="75"/>
-        <CursorPos X="22" Y="89"/>
-        <UsageCount Value="90"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="54"/>
+        <CursorPos X="24" Y="94"/>
+        <UsageCount Value="92"/>
         <Bookmarks Count="1">
           <Item0 X="36" Y="89" ID="1"/>
         </Bookmarks>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="forms/fmxMain.pas"/>
@@ -36,16 +33,14 @@
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="10"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="92"/>
       </Unit2>
       <Unit3>
         <Filename Value="units/CpuCount.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="90"/>
+        <CursorPos X="28" Y="27"/>
+        <UsageCount Value="92"/>
       </Unit3>
       <Unit4>
         <Filename Value="units/dmxPlayer.pas"/>
@@ -54,55 +49,53 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <EditorIndex Value="-1"/>
-        <CursorPos X="13" Y="22"/>
-        <UsageCount Value="90"/>
+        <TopLine Value="21"/>
+        <UsageCount Value="92"/>
       </Unit4>
       <Unit5>
         <Filename Value="units/PlayerExtractors.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="173"/>
-        <CursorPos X="15" Y="45"/>
-        <UsageCount Value="90"/>
+        <TopLine Value="200"/>
+        <CursorPos X="39" Y="237"/>
+        <UsageCount Value="92"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="units/PlayerLogger.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="90"/>
+        <CursorPos X="3" Y="13"/>
+        <UsageCount Value="92"/>
       </Unit6>
       <Unit7>
         <Filename Value="units/PlayerOptions.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="20"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="92"/>
       </Unit7>
       <Unit8>
         <Filename Value="units/PlayerSessionStorage.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="233"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="92"/>
       </Unit8>
       <Unit9>
         <Filename Value="units/PlayerSubtitleExtractors.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="84"/>
-        <CursorPos X="28" Y="96"/>
-        <UsageCount Value="90"/>
+        <TopLine Value="52"/>
+        <UsageCount Value="92"/>
       </Unit9>
       <Unit10>
         <Filename Value="units/PlayerThreads.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="16"/>
+        <TopLine Value="13"/>
         <CursorPos X="23" Y="24"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="92"/>
         <Bookmarks Count="1">
-          <Item0 X="7" Y="125" ID="1"/>
+          <Item0 X="7" Y="123" ID="1"/>
         </Bookmarks>
       </Unit10>
       <Unit11>
@@ -111,12 +104,10 @@
         <ComponentName Value="fmProgress"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="6"/>
         <CursorPos X="21" Y="22"/>
-        <UsageCount Value="90"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <UsageCount Value="92"/>
       </Unit11>
       <Unit12>
         <Filename Value="units/PlayerGPX.pas"/>
@@ -124,7 +115,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="71"/>
         <CursorPos X="28" Y="104"/>
-        <UsageCount Value="77"/>
+        <UsageCount Value="79"/>
       </Unit12>
       <Unit13>
         <Filename Value="fmxmain.pas"/>
@@ -329,9 +320,10 @@
         <Filename Value="units/playerdataexporters.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PlayerDataExporters"/>
-        <EditorIndex Value="3"/>
-        <CursorPos X="68" Y="32"/>
-        <UsageCount Value="22"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="5" Y="34"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit40>
       <Unit41>
@@ -341,128 +333,116 @@
         <CursorPos X="14" Y="1706"/>
         <UsageCount Value="10"/>
       </Unit41>
+      <Unit42>
+        <Filename Value="/usr/share/fpcsrc/3.0.4/rtl/unix/sysutils.pp"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="10"/>
+      </Unit42>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="26" HistoryIndex="25">
       <Position1>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="275" Column="3" TopLine="271"/>
+        <Caret Line="47" Column="22" TopLine="24"/>
       </Position1>
       <Position2>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="43" Column="15" TopLine="20"/>
+        <Caret Line="336" Column="7" TopLine="325"/>
       </Position2>
       <Position3>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="291" Column="3" TopLine="287"/>
+        <Caret Line="339" Column="29" TopLine="325"/>
       </Position3>
       <Position4>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="42" Column="15" TopLine="21"/>
+        <Caret Line="16" Column="14"/>
       </Position4>
       <Position5>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="298" Column="3" TopLine="271"/>
+        <Caret Line="18" Column="23"/>
       </Position5>
       <Position6>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="48" Column="15" TopLine="21"/>
+        <Caret Line="16" Column="16"/>
       </Position6>
       <Position7>
-        <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="45" Column="23" TopLine="36"/>
+        <Filename Value="units/playerdataexporters.pas"/>
+        <Caret Line="23" Column="57"/>
       </Position7>
       <Position8>
-        <Filename Value="dpl.lpr"/>
-        <Caret Line="26" Column="23"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="79" Column="34" TopLine="64"/>
       </Position8>
       <Position9>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="30" Column="75" TopLine="15"/>
+        <Caret Line="227" Column="3" TopLine="225"/>
       </Position9>
       <Position10>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="66" Column="44" TopLine="44"/>
+        <Caret Line="80" Column="17" TopLine="57"/>
       </Position10>
       <Position11>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="29" Column="36" TopLine="22"/>
+        <Caret Line="235" Column="3" TopLine="233"/>
       </Position11>
       <Position12>
-        <Filename Value="dpl.lpr"/>
-        <Caret Line="26" Column="23"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="82" Column="16" TopLine="58"/>
       </Position12>
       <Position13>
-        <Filename Value="forms/fmxOptions.pas"/>
-        <Caret Line="96" Column="36" TopLine="67"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="247" Column="3" TopLine="240"/>
       </Position13>
       <Position14>
-        <Filename Value="forms/fmxOptions.pas"/>
-        <Caret Line="55" Column="5" TopLine="34"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="80" Column="15" TopLine="60"/>
       </Position14>
       <Position15>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="48" Column="47" TopLine="26"/>
+        <Caret Line="235" Column="3" TopLine="233"/>
       </Position15>
       <Position16>
-        <Filename Value="units/playerdataexporters.pas"/>
-        <Caret Line="22" Column="45"/>
+        <Filename Value="units/PlayerExtractors.pas"/>
+        <Caret Line="79" Column="16" TopLine="58"/>
       </Position16>
       <Position17>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="406" Column="32" TopLine="380"/>
+        <Caret Line="229" Column="3" TopLine="225"/>
       </Position17>
       <Position18>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="48" Column="14" TopLine="27"/>
+        <Caret Line="77" Column="17" TopLine="57"/>
       </Position18>
       <Position19>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="41" Column="28" TopLine="278"/>
+        <Caret Line="216" Column="3" TopLine="214"/>
       </Position19>
       <Position20>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="65" Column="70" TopLine="27"/>
+        <Caret Line="79" Column="14" TopLine="55"/>
       </Position20>
       <Position21>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="303" Column="13" TopLine="300"/>
+        <Caret Line="229" Column="39" TopLine="225"/>
       </Position21>
       <Position22>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="64" TopLine="32"/>
       </Position22>
       <Position23>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="297" Column="43" TopLine="274"/>
+        <Caret Line="74" Column="21" TopLine="37"/>
       </Position23>
       <Position24>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="303" Column="29" TopLine="281"/>
+        <Caret Line="158" Column="48" TopLine="121"/>
       </Position24>
       <Position25>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="45" Column="15" TopLine="22"/>
+        <Caret Line="164" Column="50" TopLine="127"/>
       </Position25>
       <Position26>
         <Filename Value="units/PlayerExtractors.pas"/>
-        <Caret Line="309" Column="24" TopLine="288"/>
+        <Caret Line="229" Column="39" TopLine="192"/>
       </Position26>
-      <Position27>
-        <Filename Value="forms/fmxOptions.pas"/>
-        <Caret Line="97" Column="11" TopLine="75"/>
-      </Position27>
-      <Position28>
-        <Filename Value="forms/fmxOptions.pas"/>
-        <Caret Line="89" Column="36" TopLine="75"/>
-      </Position28>
-      <Position29>
-        <Filename Value="forms/fmxProgress.pas"/>
-        <Caret Line="30" Column="15" TopLine="8"/>
-      </Position29>
-      <Position30>
-        <Filename Value="forms/fmxProgress.pas"/>
-        <Caret Line="75" Column="3" TopLine="36"/>
-      </Position30>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

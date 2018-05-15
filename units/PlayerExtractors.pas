@@ -227,6 +227,7 @@ begin
   FExtractor:=AExtractor;
   FCount:=0;
   InitCriticalSection(FCriticalSection);
+
   inherited Create;
 end;
 
@@ -354,8 +355,6 @@ begin
   PrepareTempDir(opts.TempDir);
   FLoaded:=FindSession;
   if not FLoaded then PrepareSession;
-
-  FExporter:=TPlayerDataExporter.Create(FStorage);
 end;
 
 function TPlayerInfoExtractor.FindSession: Boolean;
@@ -408,15 +407,22 @@ end;
 
 destructor TPlayerInfoExtractor.Destroy;
 begin
-  FExporter.Free;
+  if FExporter <> nil then;
+    FExporter.Free;
+
   FStorage.Free;
   FList.Free;
   logger.Log('extractor finished');
+
   inherited;
 end;
 
 function TPlayerInfoExtractor.ExportData: TPlayerThreadManager;
 begin
+  Result:=nil;
+  if not Loaded then Exit;
+
+  FExporter:=TPlayerDataExporter.Create(SessionID);
   Result:=FExporter.ExportData;
 end;
 

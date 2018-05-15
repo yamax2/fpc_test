@@ -7,8 +7,7 @@ interface
 uses
   Classes,
   SysUtils,
-  PlayerThreads,
-  PlayerSessionStorage;
+  PlayerThreads;
 
 type
 
@@ -21,25 +20,31 @@ type
   private
     FOnFinish: TNotifyEvent;
     FOnProcess: TPlayerProcessEvent;
-    FStorage: TPlayerSessionStorage;
+    FSessionID: String;
   public
-    constructor Create(AStorage: TPlayerSessionStorage);
+    constructor Create(ASessionID: String);
     function ExportData: TPlayerThreadManager;
 
-    property Storage: TPlayerSessionStorage read FStorage;
-
+    property SessionID: String read FSessionID;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnProcess: TPlayerProcessEvent read FOnProcess write FOnProcess;
   end;
 
+  TPlayerDataExporterManager = class(TPlayerThreadManager)
+
+  end;
+
 implementation
+
+uses
+  dmxPlayer;
 
 { TPlayerDataExporter }
 
-constructor TPlayerDataExporter.Create(AStorage: TPlayerSessionStorage);
+constructor TPlayerDataExporter.Create(ASessionID: String);
 begin
   inherited Create;
-  FStorage:=AStorage;
+  FSessionID:=ASessionID;
 end;
 
 function TPlayerDataExporter.ExportData: TPlayerThreadManager;
