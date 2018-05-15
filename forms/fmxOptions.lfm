@@ -10,7 +10,7 @@ object fmOptions: TfmOptions
   Constraints.MinHeight = 450
   Constraints.MinWidth = 687
   ShowHint = True
-  LCLVersion = '1.8.0.4'
+  LCLVersion = '1.8.2.0'
   object pButtons: TPanel
     Left = 0
     Height = 50

@@ -9,23 +9,26 @@ uses
   cthreads,
   cmem,
 {$endif}
-  Classes, SysUtils, PlayerThreads, PlayerSubtitleExtractors,
-  PlayerSessionStorage;
+  Classes,
+  SysUtils,
+  PlayerThreads,
+  PlayerSubtitleExtractors,
+  PlayerSessionStorage,
+  PlayerDataExporters;
 
 type
   { TPlayerInfoExtractor }
 
-  TPlayerExtractorProcessEvent = procedure(Sender: TObject;
-    const AProcessedCount: Integer) of object;
   TPlayerInfoExtractor = class
   private
     FList: TPlayerFileList;
     FLoaded: Boolean;
     FOnFinish: TNotifyEvent;
-    FOnProcess: TPlayerExtractorProcessEvent;
+    FOnProcess: TPlayerProcessEvent;
     FSessionID: String;
     FTempDir: String;
     FCrc32: String;
+    FExporter: TPlayerDataExporter;
     FStorage: TPlayerSessionStorage;
     FProcessedCount: Integer;
     function FindSession: Boolean;
@@ -38,10 +41,13 @@ type
   protected
     procedure DoFinish; virtual;
     procedure DoProcess; virtual;
+    procedure SetOnFinish(AValue: TNotifyEvent); virtual;
+    procedure SetOnProcess(AValue: TPlayerProcessEvent); virtual;
   public
     constructor Create(AFileList: TStrings);
     destructor Destroy; override;
 
+    function ExportData: TPlayerThreadManager;
     function LoadData: TPlayerThreadManager;
 
     property Count: Integer read GetCount;
@@ -55,9 +61,8 @@ type
     property SessionID: String read FSessionID;
     property TempDir: String read FTempDir;
 
-    property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
-    property OnProcess: TPlayerExtractorProcessEvent
-      read FOnProcess write FOnProcess;
+    property OnFinish: TNotifyEvent read FOnFinish write SetOnFinish;
+    property OnProcess: TPlayerProcessEvent read FOnProcess write SetOnProcess;
   end;
 
   { TPlayerExtractorManager }
@@ -288,7 +293,20 @@ begin
 
   db:=FTempDir + 'player.db';
   logger.Log('database: %s', [db]);
+
   FStorage:=TPlayerSessionStorage.Create(db);
+end;
+
+procedure TPlayerInfoExtractor.SetOnFinish(AValue: TNotifyEvent);
+begin
+  FOnFinish:=AValue;
+  FExporter.OnFinish:=AValue;
+end;
+
+procedure TPlayerInfoExtractor.SetOnProcess(AValue: TPlayerProcessEvent);
+begin
+  FOnProcess:=AValue;
+  FExporter.OnProcess:=AValue;
 end;
 
 procedure TPlayerInfoExtractor.DoFinish;
@@ -336,6 +354,8 @@ begin
   PrepareTempDir(opts.TempDir);
   FLoaded:=FindSession;
   if not FLoaded then PrepareSession;
+
+  FExporter:=TPlayerDataExporter.Create(FStorage);
 end;
 
 function TPlayerInfoExtractor.FindSession: Boolean;
@@ -388,26 +408,30 @@ end;
 
 destructor TPlayerInfoExtractor.Destroy;
 begin
+  FExporter.Free;
   FStorage.Free;
   FList.Free;
   logger.Log('extractor finished');
   inherited;
 end;
 
+function TPlayerInfoExtractor.ExportData: TPlayerThreadManager;
+begin
+  Result:=FExporter.ExportData;
+end;
+
 function TPlayerInfoExtractor.LoadData: TPlayerThreadManager;
 begin
   Result:=nil;
+  if Loaded then Exit;
 
-  if not Loaded then
-  begin
-    FProcessedCount:=0;
-    logger.Log('loading session: %s', [FSessionID]);
+  FProcessedCount:=0;
+  logger.Log('loading session: %s', [FSessionID]);
 
-    FStorage.AddSession(FSessionID, FCrc32, FList);
-    Result:=TPlayerExtractorManager.Create(Self);
+  FStorage.AddSession(FSessionID, FCrc32, FList);
+  Result:=TPlayerExtractorManager.Create(Self);
 
-    Result.Start;
-  end;
+  Result.Start;
 end;
 
 end.

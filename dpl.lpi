@@ -62,7 +62,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="14">
       <Unit0>
         <Filename Value="dpl.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -127,6 +127,11 @@
         <Filename Value="units/PlayerGPX.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit12>
+      <Unit13>
+        <Filename Value="units/playerdataexporters.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="PlayerDataExporters"/>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

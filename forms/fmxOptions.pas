@@ -96,6 +96,19 @@ begin
         finally
           Manager.Free;
         end;
+
+        if not FExtractor.Loaded then Exit;
+
+        ProgressBar.Position:=0;
+        Manager:=FExtractor.ExportData;
+
+        if Manager <> nil then
+          try
+            ShowModal;
+            Manager.WaitFor;
+          finally
+            Manager.Free;
+          end;
       finally
         Free;
       end;

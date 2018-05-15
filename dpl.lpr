@@ -21,6 +21,9 @@ uses
   PlayerGPX,
   PlayerSessionStorage,
 
+  // json and html exporters
+  PlayerDataExporters,
+
   // forms
   fmxOptions,
   fmxMain,
