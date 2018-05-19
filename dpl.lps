@@ -9,7 +9,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="23" Y="26"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
       </Unit0>
       <Unit1>
         <Filename Value="forms/fmxOptions.pas"/>
@@ -20,7 +20,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="54"/>
         <CursorPos X="24" Y="94"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
         <Bookmarks Count="1">
           <Item0 X="36" Y="89" ID="1"/>
         </Bookmarks>
@@ -33,14 +33,14 @@
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="10"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
       </Unit2>
       <Unit3>
         <Filename Value="units/CpuCount.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="28" Y="27"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
       </Unit3>
       <Unit4>
         <Filename Value="units/dmxPlayer.pas"/>
@@ -50,14 +50,14 @@
         <ResourceBaseClass Value="DataModule"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="21"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
       </Unit4>
       <Unit5>
         <Filename Value="units/PlayerExtractors.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="200"/>
-        <CursorPos X="39" Y="237"/>
-        <UsageCount Value="92"/>
+        <TopLine Value="125"/>
+        <CursorPos X="47" Y="444"/>
+        <UsageCount Value="114"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -65,27 +65,27 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="13"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
       </Unit6>
       <Unit7>
         <Filename Value="units/PlayerOptions.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="20"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
       </Unit7>
       <Unit8>
         <Filename Value="units/PlayerSessionStorage.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
       </Unit8>
       <Unit9>
         <Filename Value="units/PlayerSubtitleExtractors.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="52"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
       </Unit9>
       <Unit10>
         <Filename Value="units/PlayerThreads.pas"/>
@@ -93,7 +93,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="13"/>
         <CursorPos X="23" Y="24"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
         <Bookmarks Count="1">
           <Item0 X="7" Y="123" ID="1"/>
         </Bookmarks>
@@ -107,7 +107,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="6"/>
         <CursorPos X="21" Y="22"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="114"/>
       </Unit11>
       <Unit12>
         <Filename Value="units/PlayerGPX.pas"/>
@@ -115,18 +115,29 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="71"/>
         <CursorPos X="28" Y="104"/>
-        <UsageCount Value="79"/>
+        <UsageCount Value="101"/>
       </Unit12>
       <Unit13>
+        <Filename Value="units/playerdataexporters.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="PlayerDataExporters"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="13"/>
+        <CursorPos X="64" Y="28"/>
+        <UsageCount Value="46"/>
+        <Loaded Value="True"/>
+      </Unit13>
+      <Unit14>
         <Filename Value="fmxmain.pas"/>
         <ComponentName Value="fmMain"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fmxMain"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="18" Y="38"/>
-        <UsageCount Value="14"/>
-      </Unit13>
-      <Unit14>
+        <UsageCount Value="12"/>
+      </Unit14>
+      <Unit15>
         <Filename Value="fmxoptions.pas"/>
         <ComponentName Value="fmOptions"/>
         <ResourceBaseClass Value="Form"/>
@@ -134,209 +145,199 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="22"/>
         <CursorPos X="14" Y="80"/>
-        <UsageCount Value="14"/>
-      </Unit14>
-      <Unit15>
+        <UsageCount Value="12"/>
+      </Unit15>
+      <Unit16>
         <Filename Value="/usr/lib/lazarus/1.8.0/components/lazutils/fileutil.pas"/>
         <UnitName Value="FileUtil"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="226"/>
         <CursorPos X="11" Y="251"/>
-        <UsageCount Value="4"/>
-      </Unit15>
-      <Unit16>
+        <UsageCount Value="2"/>
+      </Unit16>
+      <Unit17>
         <Filename Value="forms/fmxmain.pas"/>
         <HasResources Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="14"/>
-      </Unit16>
-      <Unit17>
+        <UsageCount Value="12"/>
+      </Unit17>
+      <Unit18>
         <Filename Value="forms/fmxoptions.pas"/>
         <HasResources Value="True"/>
         <UnitName Value="fmxOptions"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="55"/>
         <CursorPos X="43" Y="79"/>
-        <UsageCount Value="14"/>
-      </Unit17>
-      <Unit18>
+        <UsageCount Value="12"/>
+      </Unit18>
+      <Unit19>
         <Filename Value="forms/fmxprogress.pas"/>
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fmxProgress"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="89" Y="12"/>
-        <UsageCount Value="14"/>
-      </Unit18>
-      <Unit19>
+        <UsageCount Value="12"/>
+      </Unit19>
+      <Unit20>
         <Filename Value="/usr/lib/lazarus/1.8.0/lcl/forms.pp"/>
         <UnitName Value="Forms"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="43"/>
         <CursorPos X="25" Y="69"/>
-        <UsageCount Value="4"/>
-      </Unit19>
-      <Unit20>
+        <UsageCount Value="2"/>
+      </Unit20>
+      <Unit21>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/classes/classesh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1678"/>
         <CursorPos X="15" Y="1706"/>
-        <UsageCount Value="5"/>
-      </Unit20>
-      <Unit21>
+        <UsageCount Value="3"/>
+      </Unit21>
+      <Unit22>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/inc/threadh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="132"/>
         <CursorPos X="11" Y="175"/>
-        <UsageCount Value="5"/>
-      </Unit21>
-      <Unit22>
+        <UsageCount Value="3"/>
+      </Unit22>
+      <Unit23>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/unix/tthread.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="49"/>
         <CursorPos X="25" Y="49"/>
-        <UsageCount Value="5"/>
-      </Unit22>
-      <Unit23>
+        <UsageCount Value="3"/>
+      </Unit23>
+      <Unit24>
         <Filename Value="/usr/share/fpcsrc/3.0.2/packages/fcl-base/src/custapp.pp"/>
         <UnitName Value="CustApp"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="25"/>
-        <UsageCount Value="4"/>
-      </Unit23>
-      <Unit24>
+        <UsageCount Value="2"/>
+      </Unit24>
+      <Unit25>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/classes/classes.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="241"/>
         <CursorPos X="3" Y="243"/>
-        <UsageCount Value="5"/>
-      </Unit24>
-      <Unit25>
+        <UsageCount Value="3"/>
+      </Unit25>
+      <Unit26>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/classes/lists.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="957"/>
         <CursorPos X="5" Y="959"/>
-        <UsageCount Value="5"/>
-      </Unit25>
-      <Unit26>
+        <UsageCount Value="3"/>
+      </Unit26>
+      <Unit27>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/unix/cthreads.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="323"/>
         <CursorPos X="53" Y="348"/>
-        <UsageCount Value="5"/>
-      </Unit26>
-      <Unit27>
+        <UsageCount Value="3"/>
+      </Unit27>
+      <Unit28>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/linux/sysosh.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="24"/>
-        <UsageCount Value="5"/>
-      </Unit27>
-      <Unit28>
+        <UsageCount Value="3"/>
+      </Unit28>
+      <Unit29>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/inc/systemh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="330"/>
         <CursorPos X="15" Y="355"/>
-        <UsageCount Value="5"/>
-      </Unit28>
-      <Unit29>
+        <UsageCount Value="3"/>
+      </Unit29>
+      <Unit30>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/inc/thread.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="180"/>
         <CursorPos X="3" Y="183"/>
-        <UsageCount Value="5"/>
-      </Unit29>
-      <Unit30>
+        <UsageCount Value="3"/>
+      </Unit30>
+      <Unit31>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/objpas.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="21"/>
         <CursorPos X="8" Y="46"/>
-        <UsageCount Value="5"/>
-      </Unit30>
-      <Unit31>
-        <Filename Value="/usr/share/fpcsrc/3.0.2/packages/rtl-objpas/src/inc/dateutils.pp"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="3"/>
       </Unit31>
       <Unit32>
-        <Filename Value="/usr/share/fpcsrc/3.0.2/packages/rtl-objpas/src/inc/dateutil.inc"/>
+        <Filename Value="/usr/share/fpcsrc/3.0.2/packages/rtl-objpas/src/inc/dateutils.pp"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="3"/>
       </Unit32>
       <Unit33>
+        <Filename Value="/usr/share/fpcsrc/3.0.2/packages/rtl-objpas/src/inc/dateutil.inc"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="3"/>
+      </Unit33>
+      <Unit34>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/sysutils/datih.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="129"/>
         <CursorPos X="10" Y="154"/>
-        <UsageCount Value="5"/>
-      </Unit33>
-      <Unit34>
+        <UsageCount Value="3"/>
+      </Unit34>
+      <Unit35>
         <Filename Value="/usr/share/fpcsrc/3.0.2/packages/fcl-db/src/sqldb/sqldb.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="589"/>
         <CursorPos X="3" Y="614"/>
-        <UsageCount Value="5"/>
-      </Unit34>
-      <Unit35>
+        <UsageCount Value="3"/>
+      </Unit35>
+      <Unit36>
         <Filename Value="/usr/share/fpcsrc/3.0.2/packages/fcl-db/src/base/bufdataset.pas"/>
         <UnitName Value="BufDataset"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="570"/>
         <CursorPos X="15" Y="595"/>
-        <UsageCount Value="8"/>
-      </Unit35>
-      <Unit36>
+        <UsageCount Value="6"/>
+      </Unit36>
+      <Unit37>
         <Filename Value="/usr/share/fpcsrc/3.0.2/rtl/objpas/math.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="341"/>
         <CursorPos X="27" Y="372"/>
-        <UsageCount Value="8"/>
-      </Unit36>
-      <Unit37>
+        <UsageCount Value="6"/>
+      </Unit37>
+      <Unit38>
         <Filename Value="/usr/share/fpcsrc/3.0.2/packages/rtl-objpas/src/inc/strutils.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="139"/>
         <CursorPos X="10" Y="164"/>
-        <UsageCount Value="8"/>
-      </Unit37>
-      <Unit38>
+        <UsageCount Value="6"/>
+      </Unit38>
+      <Unit39>
         <Filename Value="/usr/share/fpcsrc/3.0.2/packages/fcl-db/src/base/db.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="844"/>
         <CursorPos X="21" Y="869"/>
-        <UsageCount Value="8"/>
-      </Unit38>
-      <Unit39>
+        <UsageCount Value="6"/>
+      </Unit39>
+      <Unit40>
         <Filename Value="vlc/source.vcl/PasLibVlcPlayerUnit.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="2583"/>
         <CursorPos X="39" Y="2602"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="6"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit39>
-      <Unit40>
-        <Filename Value="units/playerdataexporters.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="PlayerDataExporters"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <CursorPos X="5" Y="34"/>
-        <UsageCount Value="24"/>
-        <Loaded Value="True"/>
       </Unit40>
       <Unit41>
         <Filename Value="/usr/share/fpcsrc/3.0.4/rtl/objpas/classes/classesh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1686"/>
         <CursorPos X="14" Y="1706"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit41>
       <Unit42>
         <Filename Value="/usr/share/fpcsrc/3.0.4/rtl/unix/sysutils.pp"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit42>
     </Units>
     <JumpHistory Count="26" HistoryIndex="25">
