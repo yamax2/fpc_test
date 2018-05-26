@@ -128,9 +128,8 @@
         <IsPartOfProject Value="True"/>
       </Unit12>
       <Unit13>
-        <Filename Value="units/playerdataexporters.pas"/>
+        <Filename Value="units/PlayerDataExporters.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="PlayerDataExporters"/>
       </Unit13>
     </Units>
   </ProjectOptions>

@@ -20,8 +20,6 @@ uses
   PlayerLogger,
   PlayerGPX,
   PlayerSessionStorage,
-
-  // json and html exporters
   PlayerDataExporters,
 
   // forms
