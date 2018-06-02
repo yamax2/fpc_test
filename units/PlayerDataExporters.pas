@@ -37,7 +37,7 @@ type
 implementation
 
 uses
-  dmxPlayer;
+  dmxPlayer, PlayerLogger, Dialogs;
 
 { TPlayerDataExporter }
 
@@ -50,6 +50,8 @@ end;
 function TPlayerDataExporter.ExportData: TPlayerThreadManager;
 begin
   Result:=nil;
+
+  logger.Log('exporting session: %s', [FSessionID]);
 end;
 
 end.

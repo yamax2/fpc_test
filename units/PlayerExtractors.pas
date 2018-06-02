@@ -41,8 +41,6 @@ type
   protected
     procedure DoFinish; virtual;
     procedure DoProcess; virtual;
-    procedure SetOnFinish(AValue: TNotifyEvent); virtual;
-    procedure SetOnProcess(AValue: TPlayerProcessEvent); virtual;
   public
     constructor Create(AFileList: TStrings);
     destructor Destroy; override;
@@ -61,8 +59,8 @@ type
     property SessionID: String read FSessionID;
     property TempDir: String read FTempDir;
 
-    property OnFinish: TNotifyEvent read FOnFinish write SetOnFinish;
-    property OnProcess: TPlayerProcessEvent read FOnProcess write SetOnProcess;
+    property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
+    property OnProcess: TPlayerProcessEvent read FOnProcess write FOnProcess;
   end;
 
   { TPlayerExtractorManager }
@@ -298,18 +296,6 @@ begin
   FStorage:=TPlayerSessionStorage.Create(db);
 end;
 
-procedure TPlayerInfoExtractor.SetOnFinish(AValue: TNotifyEvent);
-begin
-  FOnFinish:=AValue;
-  FExporter.OnFinish:=AValue;
-end;
-
-procedure TPlayerInfoExtractor.SetOnProcess(AValue: TPlayerProcessEvent);
-begin
-  FOnProcess:=AValue;
-  FExporter.OnProcess:=AValue;
-end;
-
 procedure TPlayerInfoExtractor.DoFinish;
 begin
   if @FOnFinish <> nil then
@@ -423,6 +409,9 @@ begin
   if not Loaded then Exit;
 
   FExporter:=TPlayerDataExporter.Create(SessionID);
+  FExporter.OnFinish:=FOnFinish;
+  FExporter.OnProcess:=FOnProcess;
+
   Result:=FExporter.ExportData;
 end;
 

@@ -82,13 +82,14 @@ begin
   SessionID:='';
   FExtractor:=TPlayerInfoExtractor.Create(ListBox.Items);
   try
-    if not FExtractor.Loaded then
-      with TfmProgress.Create(Self) do
-      try
-        TrackCount:=FExtractor.Count;
-        FExtractor.OnFinish:=@ProcessFinished;
-        FExtractor.OnProcess:=@Processed;
+    with TfmProgress.Create(Self) do
+    try
+      TrackCount:=FExtractor.Count;
+      FExtractor.OnFinish:=@ProcessFinished;
+      FExtractor.OnProcess:=@Processed;
 
+      if not FExtractor.Loaded then
+      begin
         Manager:=FExtractor.LoadData;
         try
           ShowModal;
@@ -96,22 +97,23 @@ begin
         finally
           Manager.Free;
         end;
-
-        if not FExtractor.Loaded then Exit;
-
-        ProgressBar.Position:=0;
-        Manager:=FExtractor.ExportData;
-
-        if Manager <> nil then
-          try
-            ShowModal;
-            Manager.WaitFor;
-          finally
-            Manager.Free;
-          end;
-      finally
-        Free;
       end;
+
+      if not FExtractor.Loaded then Exit;
+
+      ProgressBar.Position:=0;
+      Manager:=FExtractor.ExportData;
+
+      if Manager <> nil then
+        try
+          ShowModal;
+          Manager.WaitFor;
+        finally
+          Manager.Free;
+        end;
+    finally
+      Free;
+    end;
 
     if not FExtractor.Loaded then Exit;
     SessionID:=FExtractor.SessionID;
