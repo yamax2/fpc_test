@@ -28,7 +28,6 @@ type
     FSessionID: String;
     FTempDir: String;
     FCrc32: String;
-    FExporter: TPlayerDataExporter;
     FStorage: TPlayerSessionStorage;
     FProcessedCount: Integer;
     function FindSession: Boolean;
@@ -45,7 +44,6 @@ type
     constructor Create(AFileList: TStrings);
     destructor Destroy; override;
 
-    function ExportData: TPlayerThreadManager;
     function LoadData: TPlayerThreadManager;
 
     property Count: Integer read GetCount;
@@ -393,26 +391,11 @@ end;
 
 destructor TPlayerInfoExtractor.Destroy;
 begin
-  if FExporter <> nil then;
-    FExporter.Free;
-
   FStorage.Free;
   FList.Free;
-  logger.Log('extractor finished');
+  logger.Log('extraction finish');
 
   inherited;
-end;
-
-function TPlayerInfoExtractor.ExportData: TPlayerThreadManager;
-begin
-  Result:=nil;
-  if not Loaded then Exit;
-
-  FExporter:=TPlayerDataExporter.Create(SessionID);
-  FExporter.OnFinish:=FOnFinish;
-  FExporter.OnProcess:=FOnProcess;
-
-  Result:=FExporter.ExportData;
 end;
 
 function TPlayerInfoExtractor.LoadData: TPlayerThreadManager;

@@ -10,3 +10,4 @@ sqlite/*.so
 sqlite/*.dll
 sqlite/extension-functions.c
 dpl
+dpl.lps

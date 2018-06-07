@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, ComCtrls, ActnList, Buttons, Menus, PlayerExtractors;
+  StdCtrls, ComCtrls, ActnList, Buttons, Menus,
+  PlayerExtractors, PlayerDataExporters;
 
 type
 
@@ -52,9 +53,14 @@ type
     procedure acRemoveUpdate(Sender: TObject);
     procedure lbGithubClick(Sender: TObject);
   private
+    FSessionID: String;
     FExtractor: TPlayerInfoExtractor;
+    FExporter: TPlayerDataExporter;
     procedure AddFileToList(const FileName: String);
     procedure OnException(Sender: TObject; E: Exception);
+
+    function ExtractData: Boolean;
+    function ExportData: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -79,47 +85,7 @@ procedure TfmOptions.acOpenExecute(Sender: TObject);
 var
   SessionID: String;
 begin
-  SessionID:='';
-  FExtractor:=TPlayerInfoExtractor.Create(ListBox.Items);
-  try
-    with TfmProgress.Create(Self) do
-    try
-      TrackCount:=FExtractor.Count;
-      FExtractor.OnFinish:=@ProcessFinished;
-      FExtractor.OnProcess:=@Processed;
-
-      if not FExtractor.Loaded then
-      begin
-        Manager:=FExtractor.LoadData;
-        try
-          ShowModal;
-          Manager.WaitFor;
-        finally
-          Manager.Free;
-        end;
-      end;
-
-      if not FExtractor.Loaded then Exit;
-
-      ProgressBar.Position:=0;
-      Manager:=FExtractor.ExportData;
-
-      if Manager <> nil then
-        try
-          ShowModal;
-          Manager.WaitFor;
-        finally
-          Manager.Free;
-        end;
-    finally
-      Free;
-    end;
-
-    if not FExtractor.Loaded then Exit;
-    SessionID:=FExtractor.SessionID;
-  finally
-    FExtractor.Free;
-  end;
+  if not ExtractData or not ExportData then Exit;
 
   Hide;
   Application.CreateForm(TfmMain, fmMain);
@@ -200,9 +166,74 @@ begin
   logger.Log('Exception: %s', [E.Message]);
 end;
 
+function TfmOptions.ExtractData: Boolean;
+begin
+  Result:=False;
+
+  FExtractor:=TPlayerInfoExtractor.Create(ListBox.Items);
+  try
+    Result:=FExtractor.Loaded;
+    if Result then Exit;
+
+    with TfmProgress.Create(Self) do
+    try
+      TrackCount:=FExtractor.Count;
+      FExtractor.OnFinish:=@ProcessFinished;
+      FExtractor.OnProcess:=@Processed;
+
+      Manager:=FExtractor.LoadData;
+      try
+        ShowModal;
+        Manager.WaitFor;
+      finally
+        Manager.Free;
+      end;
+    finally
+      Free;
+    end;
+
+    Result:=FExtractor.Loaded;
+    if Result then
+      FSessionID:=FExtractor.SessionID;
+  finally
+    FExtractor.Free;
+  end;
+end;
+
+function TfmOptions.ExportData: Boolean;
+begin
+  Result:=False;
+
+  FExporter:=TPlayerDataExporter.Create(FSessionID);
+  try
+    with TfmProgress.Create(Self) do
+    try
+      ProgressBar.Position:=0;
+      FExporter.OnFinish:=@ProcessFinished;
+      FExporter.OnProcess:=@Processed;
+
+      Manager:=FExporter.ExportData;
+      if Manager <> nil then
+        try
+          ShowModal;
+          Manager.WaitFor;
+        finally
+          Manager.Free;
+        end;
+    finally
+      Free;
+    end;
+
+    Result:=FExporter.Exported;
+  finally
+    FExporter.Free;
+  end;
+end;
+
 constructor TfmOptions.Create(AOwner: TComponent);
 begin
   inherited;
+  FSessionID:='';
   Application.OnException:=@OnException;
   lbGithub.Font.Color:=clBlue;
   Caption:=Application.Title;
