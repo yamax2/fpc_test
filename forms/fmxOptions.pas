@@ -173,6 +173,7 @@ begin
   FExtractor:=TPlayerInfoExtractor.Create(ListBox.Items);
   try
     Result:=FExtractor.Loaded;
+    FSessionID:=FExtractor.SessionID;
     if Result then Exit;
 
     with TfmProgress.Create(Self) do
@@ -193,8 +194,6 @@ begin
     end;
 
     Result:=FExtractor.Loaded;
-    if Result then
-      FSessionID:=FExtractor.SessionID;
   finally
     FExtractor.Free;
   end;

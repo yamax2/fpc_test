@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-  dmxPlayer, PlayerLogger, PlayerOptions;
+  dmxPlayer, PlayerLogger, PlayerOptions, FileUtil;
 
 { TPlayerDataExporter }
 
@@ -62,6 +62,8 @@ end;
 destructor TPlayerDataExporter.Destroy;
 begin
   logger.Log('export finished');
+  logger.log('deleting dir: %s', [FDir]);
+  DeleteDirectory(FDir, False);
 
   inherited;
 end;
