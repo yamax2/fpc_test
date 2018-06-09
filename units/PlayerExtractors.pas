@@ -14,7 +14,7 @@ uses
   PlayerThreads,
   PlayerSubtitleExtractors,
   PlayerSessionStorage,
-  PlayerDataExporters;
+  PlayerExporters;
 
 type
   { TPlayerInfoExtractor }

@@ -20,7 +20,7 @@ uses
   PlayerLogger,
   PlayerGPX,
   PlayerSessionStorage,
-  PlayerDataExporters,
+  PlayerExporters,
 
   // forms
   fmxOptions,

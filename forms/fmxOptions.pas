@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, ComCtrls, ActnList, Buttons, Menus,
-  PlayerExtractors, PlayerDataExporters;
+  PlayerExtractors, PlayerExporters;
 
 type
 
@@ -55,7 +55,7 @@ type
   private
     FSessionID: String;
     FExtractor: TPlayerInfoExtractor;
-    FExporter: TPlayerDataExporter;
+    FExporter: TPlayerExporter;
     procedure AddFileToList(const FileName: String);
     procedure OnException(Sender: TObject; E: Exception);
 
@@ -203,7 +203,7 @@ function TfmOptions.ExportData: Boolean;
 begin
   Result:=False;
 
-  FExporter:=TPlayerDataExporter.Create(FSessionID);
+  FExporter:=TPlayerExporter.Create(FSessionID);
   try
     with TfmProgress.Create(Self) do
     try

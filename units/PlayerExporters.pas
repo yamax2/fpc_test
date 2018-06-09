@@ -1,4 +1,4 @@
-unit PlayerDataExporters;
+unit PlayerExporters;
 
 {$mode objfpc}{$H+}
 
@@ -11,12 +11,12 @@ uses
 
 type
 
-  { TPlayerDataExporter }
+  { TPlayerExporter }
 
   TPlayerProcessEvent = procedure(Sender: TObject;
     const AProcessedCount: Integer) of object;
 
-  TPlayerDataExporter = class
+  TPlayerExporter = class
   private
     FExported: Boolean;
     FOnFinish: TNotifyEvent;
@@ -34,7 +34,7 @@ type
     property OnProcess: TPlayerProcessEvent read FOnProcess write FOnProcess;
   end;
 
-  TPlayerDataExporterManager = class(TPlayerThreadManager)
+  TPlayerExporterManager = class(TPlayerThreadManager)
 
   end;
 
@@ -43,9 +43,9 @@ implementation
 uses
   dmxPlayer, PlayerLogger, PlayerOptions, FileUtil;
 
-{ TPlayerDataExporter }
+{ TPlayerExporter }
 
-constructor TPlayerDataExporter.Create(ASessionID: String);
+constructor TPlayerExporter.Create(ASessionID: String);
 begin
   inherited Create;
   FExported:=False;
@@ -59,7 +59,7 @@ begin
   if dmPlayer <> nil then ;
 end;
 
-destructor TPlayerDataExporter.Destroy;
+destructor TPlayerExporter.Destroy;
 begin
   logger.Log('export finished');
   logger.log('deleting dir: %s', [FDir]);
@@ -68,7 +68,7 @@ begin
   inherited;
 end;
 
-function TPlayerDataExporter.ExportData: TPlayerThreadManager;
+function TPlayerExporter.ExportData: TPlayerThreadManager;
 begin
   Result:=nil;
 
