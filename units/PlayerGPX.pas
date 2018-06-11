@@ -97,9 +97,6 @@ begin
   FLines:=TStringList.Create;
   FTripID:=ATripID;
 
-  AssignFile(FFile, FFileName);
-  Rewrite(FFile);
-
   Query:=TSQLQuery.Create(Application);
   Query.DataBase:=dmPlayer.Connection;
   Query.Transaction:=dmPlayer.Transaction;
@@ -107,7 +104,6 @@ end;
 
 destructor TPlayerGPX.Destroy;
 begin
-  CloseFile(FFile);
   FLines.Free;
   Query.Free;
   inherited;
@@ -119,81 +115,87 @@ var
 begin
   logger.Log('creating gpx for trip %d', [FTripId]);
 
-  Query.SQL.Clear;
-  Query.Clear;
-
-  LoadTextFromResource(Query.SQL, 'GPX_INFO');
-  Query.ParamByName('trip_id').AsInteger:=FTripId;
-
-  logger.Log('gpx info for trip %d', [FTripId]);
-  Query.Open;
+  AssignFile(FFile, FFileName);
+  Rewrite(FFile);
   try
-    FLines.Add('<?xml version="1.0" encoding="UTF-8" ?>');
-    FLines.Add('<gpx version="1.0"');
-    FLines.Add(Format('     creator="%s"', [Application.Title]));
-    FLines.Add('     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"');
-    FLines.Add('     xmlns="http://www.topografix.com/GPX/1/0"');
-    FLines.Add('     xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">');
-    FLines.Add(Format('<time>%s</time>',
-      [FormatGpxTime(Query.FieldByName('started_at').AsString)]));
-    FLines.Add(Format('<bounds minlat="%.6n" minlon="%.6n" maxlat="%.6n" maxlon="%.6n"/>',
-      [
-        Query.FieldByName('minlat').AsFloat, Query.FieldByName('minlon').AsFloat,
-        Query.FieldByName('maxlat').AsFloat, Query.FieldByName('maxlon').AsFloat
-      ]));
-    FLines.Add('<trk>');
-    FLines.Add(Format('  <name>Track %s</name>',
-      [Query.FieldByName('started_at').AsString]));
+    Query.SQL.Clear;
+    Query.Clear;
 
-    FLines.Add(Format('  <desc>Duration: %s. Length: %.2n km. AvgSpeed: %.2n km/h.</desc>',
-      [
-        ParseDuration(Query.FieldByName('duration').AsInteger),
-        Query.FieldByName('distance').AsFloat / 1000,
-        Query.FieldByName('avg_speed').AsFloat
-      ]));
-    FLines.Add(Format('  <time>%s</time>',
-      [FormatGpxTime(Query.FieldByName('started_at').AsString)]));
-    FLines.Add('  <trkseg>');
+    LoadTextFromResource(Query.SQL, 'GPX_INFO');
+    Query.ParamByName('trip_id').AsInteger:=FTripId;
+
+    logger.Log('gpx info for trip %d', [FTripId]);
+    Query.Open;
+    try
+      FLines.Add('<?xml version="1.0" encoding="UTF-8" ?>');
+      FLines.Add('<gpx version="1.0"');
+      FLines.Add(Format('     creator="%s"', [Application.Title]));
+      FLines.Add('     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"');
+      FLines.Add('     xmlns="http://www.topografix.com/GPX/1/0"');
+      FLines.Add('     xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">');
+      FLines.Add(Format('<time>%s</time>',
+        [FormatGpxTime(Query.FieldByName('started_at').AsString)]));
+      FLines.Add(Format('<bounds minlat="%.6n" minlon="%.6n" maxlat="%.6n" maxlon="%.6n"/>',
+        [
+          Query.FieldByName('minlat').AsFloat, Query.FieldByName('minlon').AsFloat,
+          Query.FieldByName('maxlat').AsFloat, Query.FieldByName('maxlon').AsFloat
+        ]));
+      FLines.Add('<trk>');
+      FLines.Add(Format('  <name>Track %s</name>',
+        [Query.FieldByName('started_at').AsString]));
+
+      FLines.Add(Format('  <desc>Duration: %s. Length: %.2n km. AvgSpeed: %.2n km/h.</desc>',
+        [
+          ParseDuration(Query.FieldByName('duration').AsInteger),
+          Query.FieldByName('distance').AsFloat / 1000,
+          Query.FieldByName('avg_speed').AsFloat
+        ]));
+      FLines.Add(Format('  <time>%s</time>',
+        [FormatGpxTime(Query.FieldByName('started_at').AsString)]));
+      FLines.Add('  <trkseg>');
+      AppendLines;
+    finally
+      Query.Close;
+    end;
+
+    if IsTerminated then Exit;
+
+    Query.SQL.Clear;
+    Query.Clear;
+
+    LoadTextFromResource(Query.SQL, 'GPX');
+    Query.ParamByName('trip_id').AsInteger:=FTripId;
+    Query.Open;
+    try
+      Index:=0;
+      while not Query.EOF do
+      begin
+        if IsTerminated then Break;
+
+        logger.Log('saving point %d, trip %d', [Query.FieldByName('id').AsInteger, FTripId]);
+
+        AddGpxPoint;
+        Inc(Index);
+
+        if Index = 1000 then
+        begin
+          AppendLines;
+          Index:=0;
+        end;
+
+        Query.Next;
+      end;
+    finally
+      Query.Close;
+    end;
+
+    FLines.Add('  </trkseg>');
+    FLines.Add('</trk>');
+    FLines.Add('</gpx>');
     AppendLines;
   finally
-    Query.Close;
+    CloseFile(FFile);
   end;
-
-  if IsTerminated then Exit;
-
-  Query.SQL.Clear;
-  Query.Clear;
-
-  LoadTextFromResource(Query.SQL, 'GPX');
-  Query.ParamByName('trip_id').AsInteger:=FTripId;
-  Query.Open;
-  try
-    Index:=0;
-    while not Query.EOF do
-    begin
-      if IsTerminated then Break;
-
-      logger.Log('saving point %d, trip %d', [Query.FieldByName('id').AsInteger, FTripId]);
-
-      AddGpxPoint;
-      Inc(Index);
-
-      if Index = 1000 then
-      begin
-        AppendLines;
-        Index:=0;
-      end;
-
-      Query.Next;
-    end;
-  finally
-    Query.Close;
-  end;
-
-  FLines.Add('  </trkseg>');
-  FLines.Add('</trk>');
-  FLines.Add('</gpx>');
-  AppendLines;
 end;
 
 end.

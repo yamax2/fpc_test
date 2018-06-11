@@ -54,7 +54,7 @@ begin
   if FTrackCount = AValue then Exit;
 
   FTrackCount:=AValue;
-  lbInfo.Caption:=Format('processed files: 0/%d', [TrackCount]);
+  lbInfo.Caption:=Format('files: 0/%d', [TrackCount]);
 end;
 
 constructor TfmProgress.Create(AOwner: TComponent);
@@ -67,7 +67,7 @@ procedure TfmProgress.Processed(Sender: TObject; const AProcessedCount: Integer
   );
 begin
   ProgressBar.Position:=Round(100 * AProcessedCount / TrackCount);
-  lbInfo.Caption:=Format('processed files: %d/%d', [AProcessedCount, TrackCount]);
+  lbInfo.Caption:=Format('files: %d/%d', [AProcessedCount, TrackCount]);
 end;
 
 procedure TfmProgress.ProcessFinished(Sender: TObject);

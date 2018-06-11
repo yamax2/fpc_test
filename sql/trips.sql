@@ -1,7 +1,7 @@
 -- select load_extension('/projects/fpc_test/sqlite/libsqlitefunctions.so')
 
 create temporary table tmp_consts as 
-select 60 * 60 time_limit, -- max time between trips
+select 20 * 60 time_limit, -- max time between trips
        1000 m_limit,       -- max distance between trips
        :session_id session_id;
 
@@ -53,7 +53,7 @@ select track_id, sum(6371000 * 2 * atan2(sqrt(a), sqrt(1 - a))) distance
    group by track_id;
 
 update tracks 
-   set distance = (select distance from tmp_distances where tmp_distances.track_id = tracks.rowid)
+   set distance = coalesce((select distance from tmp_distances where tmp_distances.track_id = tracks.rowid), 0)
 where session_id in (select session_id from tmp_consts);
 
 create temporary table tmp_trips as
