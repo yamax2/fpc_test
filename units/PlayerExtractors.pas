@@ -21,6 +21,7 @@ type
 
   TPlayerInfoExtractor = class
   private
+    FFailed: Boolean;
     FList: TPlayerFileList;
     FLoaded: Boolean;
     FOnFinish: TNotifyEvent;
@@ -53,6 +54,7 @@ type
      read GetFileInfoByName;
 
     property Crc32: String read FCrc32;
+    property Failed: Boolean read FFailed;
     property Loaded: Boolean read FLoaded;
     property SessionID: String read FSessionID;
     property TempDir: String read FTempDir;
@@ -194,17 +196,30 @@ end;
 
 procedure TPlayerExtractorManager.Execute;
 begin
-  inherited;
+  try
+    try
+      inherited;
 
-  if not (FCount < Extractor.Count) then
-  begin
-    logger.Log('finalizing session %s', [FExtractor.FSessionID]);
-    FExtractor.FStorage.FinalizeSession(FExtractor.FSessionID);
-    Extractor.FStorage.GenerateGpx(FExtractor.FSessionID);
-    Extractor.FLoaded:=True;
+      if not (FCount < Extractor.Count) then
+      begin
+        logger.Log('finalizing session %s', [FExtractor.FSessionID]);
+        FExtractor.FStorage.FinalizeSession(FExtractor.FSessionID);
+        Extractor.FStorage.GenerateGpx(FExtractor.FSessionID);
+        Extractor.FLoaded:=True;
+      end;
+    except
+      on E: Exception do
+      begin
+        logger.Log('error on extracting session %s, text: %s',
+          [Extractor.FSessionID, E.Message]);
+
+        Interrupt(True);
+        FExtractor.FFailed:=True;
+      end;
+    end;
+  finally
+    Synchronize(@FExtractor.DoFinish);
   end;
-
-  Synchronize(@FExtractor.DoFinish);
 end;
 
 function TPlayerExtractorManager.GetNextThread: TPlayerThread;
@@ -401,6 +416,7 @@ end;
 function TPlayerInfoExtractor.LoadData: TPlayerThreadManager;
 begin
   Result:=nil;
+  FFailed:=False;
   if Loaded then Exit;
 
   FProcessedCount:=0;

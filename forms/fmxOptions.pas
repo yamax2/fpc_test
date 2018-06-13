@@ -85,7 +85,11 @@ procedure TfmOptions.acOpenExecute(Sender: TObject);
 var
   SessionID: String;
 begin
-  if not ExtractData or not ExportData then Exit;
+  if not ExtractData or not ExportData then
+  begin
+    if FExtractor.Failed then ShowMessage('error on data extraction');
+    Exit;
+  end;
 
   Hide;
   Application.CreateForm(TfmMain, fmMain);

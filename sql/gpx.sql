@@ -7,4 +7,4 @@ select points.rowid id,
   from tracks, points 
     where tracks.trip_id = :trip_id
       and points.track_id = tracks.rowid
-	   order by tracks.rn, points.rn
+        order by tracks.rn, points.rn
