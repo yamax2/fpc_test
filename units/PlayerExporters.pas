@@ -8,12 +8,9 @@ uses
   Classes,
   SysUtils,
   SqlDB,
-  fgl,
   PlayerThreads;
 
 type
-
-  TPlayerTripInfo = specialize TFPGMap<String, Variant>;
 
   { TPlayerExporter }
 
@@ -66,22 +63,22 @@ type
 
   TPlayerExporterThread = class(TPlayerThread)
   private
-    FTripInfo: TPlayerTripInfo;
+    FTripID: Integer;
     function GetManager: TPlayerExporterManager;
   protected
     procedure Execute; override;
   public
-    constructor Create(AManager: TPlayerThreadManager; AQuery: TSQLQuery);
-    destructor Destroy; override;
+    constructor Create(AManager: TPlayerThreadManager;
+      const ATripID: Integer);
 
     property Manager: TPlayerExporterManager read GetManager;
-    property TripInfo: TPlayerTripInfo read FTripInfo;
+    property TripID: Integer read FTripID;
   end;
 
 implementation
 
 uses
-  DB, dmxPlayer, PlayerLogger, PlayerOptions, FileUtil, PlayerSessionStorage;
+  dmxPlayer, PlayerLogger, PlayerOptions, FileUtil, PlayerSessionStorage;
 
 { TPlayerExporterThread }
 
@@ -99,7 +96,7 @@ begin
     on E: Exception do
     begin
       logger.Log('error on exporter trip %d, session %s, text: %s',
-        [Integer(FTripInfo['id']), Manager.Exporter.FSessionID, E.Message]);
+        [FTripID, Manager.Exporter.FSessionID, E.Message]);
 
       Manager.Exporter.FFailed:=True;
       Manager.Interrupt(True);
@@ -108,21 +105,10 @@ begin
 end;
 
 constructor TPlayerExporterThread.Create(AManager: TPlayerThreadManager;
-  AQuery: TSQLQuery);
-var
-  Field: TField;
+  const ATripID: Integer);
 begin
   inherited Create(AManager);
-
-  FTripInfo:=TPlayerTripInfo.Create;
-  for Field in AQuery.Fields do
-    FTripInfo.Add(Field.FieldName.ToLower, Field.Value);
-end;
-
-destructor TPlayerExporterThread.Destroy;
-begin
-  FTripInfo.Free;
-  inherited;
+  FTripID:=ATripID;
 end;
 
 { TPlayerExporterManager }
@@ -136,7 +122,7 @@ begin
     id:=FQuery.FieldByName('id').AsInteger;
     logger.Log('starting new exporter thread: trip %d for session %s',
       [id, Exporter.FSessionID]);
-    Result:=TPlayerExporterThread.Create(Self, FQuery);
+    Result:=TPlayerExporterThread.Create(Self, id);
     FQuery.Next;
   end
 end;
@@ -168,7 +154,7 @@ constructor TPlayerExporterManager.Create(AExporter: TPlayerExporter);
 begin
   FExporter:=AExporter;
 
-  FQuery:=Exporter.CreateQuery('GET_TRIPS');
+  FQuery:=Exporter.CreateQuery('GET_TRIPS_LIST');
   FQuery.ParamByName('session_id').AsString:=Exporter.SessionID;
   FQuery.Open;
 
