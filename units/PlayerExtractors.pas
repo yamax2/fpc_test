@@ -180,7 +180,9 @@ begin
     begin
       logger.Log('error on extractor thread %d, session %s, text: %s',
         [FIndex, Extractor.FSessionID, E.Message]);
-      raise;
+
+      Extractor.FFailed:=True;
+      Manager.Interrupt(True);
     end;
   end;
 end;
