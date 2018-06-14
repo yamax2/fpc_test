@@ -48,8 +48,8 @@ select track_id,
          cos(start_latr) * cos(end_latr) * power(sin((end_lonr - start_lonr) / 2), 2) a
  from source1
 )
-select track_id, sum(6371000 * 2 * atan2(sqrt(a), sqrt(1 - a))) distance 
- from source2  
+select track_id, sum(6371000 * 2 * atan2(sqrt(a), sqrt(1 - a))) distance
+ from source2
    group by track_id;
 
 update tracks 

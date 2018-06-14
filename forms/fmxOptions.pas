@@ -182,6 +182,7 @@ begin
 
     with TfmProgress.Create(Self) do
     try
+      ProgressBar.Position:=0;
       TrackCount:=FExtractor.Count;
       FExtractor.OnFinish:=@ProcessFinished;
       FExtractor.OnProcess:=@Processed;
@@ -212,6 +213,7 @@ begin
     with TfmProgress.Create(Self) do
     try
       ProgressBar.Position:=0;
+      TrackCount:=FExtractor.Count;
       FExporter.OnFinish:=@ProcessFinished;
       FExporter.OnProcess:=@Processed;
 
