@@ -68,12 +68,16 @@ type
   TPlayerExporterThread = class(TPlayerThread)
   private
     FTripID: Integer;
+    FQuery: TSQLQuery;
+    FTracks: TJSONArray;
     function GetManager: TPlayerExporterManager;
+    procedure SaveTracks;
   protected
     procedure Execute; override;
   public
     constructor Create(AManager: TPlayerThreadManager;
       const ATripID: Integer);
+    destructor Destroy; override;
 
     property Manager: TPlayerExporterManager read GetManager;
     property TripID: Integer read FTripID;
@@ -91,11 +95,44 @@ begin
   Result:=inherited Manager as TPlayerExporterManager;
 end;
 
+procedure TPlayerExporterThread.SaveTracks;
+var
+  List: TStringList;
+begin
+  List:=TStringList.Create;
+  try
+    List.Text:=FTracks.AsJSON;
+    List.SaveToFile(Format('%stracks_%d.json', [Manager.Exporter.FDir, FTripID]));
+  finally
+    List.Free;
+  end;
+end;
+
 procedure TPlayerExporterThread.Execute;
+var
+  Track: TJSONObject;
 begin
   try
+    FQuery.Open;
+    while not FQuery.EOF do
+    begin
+      if Terminated then Break;
+
+      Track:=TJSONObject.Create;
+      Track.Strings['filename']:=FQuery.FieldByName('filename').AsString;
+      Track.Integers['rn']:=FQuery.FieldByName('trip_rn').AsInteger;
+      Track.Integers['start_id']:=FQuery.FieldByName('start_id').AsInteger;
+      Track.Integers['end_id']:=FQuery.FieldByName('end_id').AsInteger;
+
+      FTracks.Add(Track);
+      FQuery.Next;
+    end;
+
     if not Terminated then
+    begin
+      SaveTracks;
       Synchronize(@Manager.Exporter.DoProcess);
+    end;
   except
     on E: Exception do
     begin
@@ -113,6 +150,17 @@ constructor TPlayerExporterThread.Create(AManager: TPlayerThreadManager;
 begin
   inherited Create(AManager);
   FTripID:=ATripID;
+
+  FTracks:=TJSONArray.Create;
+  FQuery:=Manager.Exporter.CreateQuery('GET_TRIPS_TRACKS');
+  FQuery.ParamByName('trip_id').AsInteger:=FTripID;
+end;
+
+destructor TPlayerExporterThread.Destroy;
+begin
+  FQuery.Free;
+  FTracks.Free;
+  inherited;
 end;
 
 { TPlayerExporterManager }
