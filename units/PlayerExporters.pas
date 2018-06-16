@@ -8,6 +8,7 @@ uses
   Classes,
   SysUtils,
   SqlDB,
+  fpjson,
   PlayerThreads;
 
 type
@@ -48,6 +49,9 @@ type
   private
     FExporter: TPlayerExporter;
     FQuery: TSQLQuery;
+    FData: TJSONArray;
+    procedure AddTrip;
+    procedure SaveTrip;
   protected
     function GetNextThread: TPlayerThread; override;
     procedure Execute; override;
@@ -78,7 +82,7 @@ type
 implementation
 
 uses
-  dmxPlayer, PlayerLogger, PlayerOptions, FileUtil, PlayerSessionStorage;
+  Math, DB, dmxPlayer, PlayerLogger, PlayerOptions, FileUtil, PlayerSessionStorage;
 
 { TPlayerExporterThread }
 
@@ -113,6 +117,38 @@ end;
 
 { TPlayerExporterManager }
 
+procedure TPlayerExporterManager.AddTrip;
+var
+  obj: TJSONObject;
+begin
+  obj:=TJSONObject.Create;
+
+  obj.Integers['id']:=FQuery.FieldByName('id').AsInteger;
+  obj.Strings['started_at']:=FQuery.FieldByName('started_at').AsString;
+  obj.Integers['duration']:=FQuery.FieldByName('duration').AsInteger;
+  obj.Strings['distance']:=FloatToStr(RoundTo(FQuery.FieldByName('distance').AsFloat, -2));
+  obj.Strings['avg_speed']:=FloatToStr(RoundTo(FQuery.FieldByName('avg_speed').AsFloat, -2));
+  obj.Strings['size']:=FloatToStr(RoundTo(FQuery.FieldByName('size_mb').AsFloat, -2));
+
+  FData.Add(obj);
+  (FQuery.FieldByName('gpx') as TBlobField).SaveToFile(
+    Format('%s%d.gpx', [Exporter.FDir, FQuery.FieldByName('id').AsInteger])
+  );
+end;
+
+procedure TPlayerExporterManager.SaveTrip;
+var
+  List: TStringList;
+begin
+  List:=TStringList.Create;
+  try
+    List.Text:=FData.AsJSON;
+    List.SaveToFile(Format('%strips.json', [Exporter.FDir]));
+  finally
+    List.Free;
+  end;
+end;
+
 function TPlayerExporterManager.GetNextThread: TPlayerThread;
 var
   id: Integer;
@@ -120,9 +156,13 @@ begin
   if FQuery.EOF then Result:=nil else
   begin
     id:=FQuery.FieldByName('id').AsInteger;
+    AddTrip;
+
     logger.Log('starting new exporter thread: trip %d for session %s',
       [id, Exporter.FSessionID]);
     Result:=TPlayerExporterThread.Create(Self, id);
+
+    SaveTrip;
     FQuery.Next;
   end
 end;
@@ -158,6 +198,8 @@ begin
   FQuery.ParamByName('session_id').AsString:=Exporter.SessionID;
   FQuery.Open;
 
+  FData:=TJSONArray.Create;
+
   inherited Create;
 end;
 
@@ -165,6 +207,7 @@ destructor TPlayerExporterManager.Destroy;
 begin
   FQuery.Close;
   FQuery.Free;
+  FData.Free;
 
   inherited;
 end;
