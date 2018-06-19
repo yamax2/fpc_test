@@ -51,7 +51,6 @@ type
     FQuery: TSQLQuery;
     FData: TJSONArray;
     procedure AddTrip;
-    procedure SaveTrip;
   protected
     function GetNextThread: TPlayerThread; override;
     procedure Execute; override;
@@ -59,6 +58,7 @@ type
     constructor Create(AExporter: TPlayerExporter);
     destructor Destroy; override;
     procedure Interrupt(const Force: Boolean = False); override;
+    procedure SaveJson(const FileName: String; AJson: TJSONData);
 
     property Exporter: TPlayerExporter read FExporter;
   end;
@@ -71,7 +71,6 @@ type
     FQuery: TSQLQuery;
     FTracks: TJSONArray;
     function GetManager: TPlayerExporterManager;
-    procedure SaveTracks;
   protected
     procedure Execute; override;
   public
@@ -93,19 +92,6 @@ uses
 function TPlayerExporterThread.GetManager: TPlayerExporterManager;
 begin
   Result:=inherited Manager as TPlayerExporterManager;
-end;
-
-procedure TPlayerExporterThread.SaveTracks;
-var
-  List: TStringList;
-begin
-  List:=TStringList.Create;
-  try
-    List.Text:=FTracks.AsJSON;
-    List.SaveToFile(Format('%stracks_%d.json', [Manager.Exporter.FDir, FTripID]));
-  finally
-    List.Free;
-  end;
 end;
 
 procedure TPlayerExporterThread.Execute;
@@ -130,7 +116,7 @@ begin
 
     if not Terminated then
     begin
-      SaveTracks;
+      Manager.SaveJson(Format('%stracks_%d.json', [Manager.Exporter.FDir, FTripID]), FTracks);
       Synchronize(@Manager.Exporter.DoProcess);
     end;
   except
@@ -184,19 +170,6 @@ begin
   );
 end;
 
-procedure TPlayerExporterManager.SaveTrip;
-var
-  List: TStringList;
-begin
-  List:=TStringList.Create;
-  try
-    List.Text:=FData.AsJSON;
-    List.SaveToFile(Format('%strips.json', [Exporter.FDir]));
-  finally
-    List.Free;
-  end;
-end;
-
 function TPlayerExporterManager.GetNextThread: TPlayerThread;
 var
   id: Integer;
@@ -210,7 +183,7 @@ begin
       [id, Exporter.FSessionID]);
     Result:=TPlayerExporterThread.Create(Self, id);
 
-    SaveTrip;
+    SaveJson(Format('%strips.json', [Exporter.FDir]), FData);
     FQuery.Next;
   end
 end;
@@ -279,6 +252,20 @@ begin
     end;
   finally
     ThreadList.UnlockList;
+  end;
+end;
+
+procedure TPlayerExporterManager.SaveJson(const FileName: String;
+  AJson: TJSONData);
+var
+  List: TStringList;
+begin
+  List:=TStringList.Create;
+  try
+    List.Text:=AJson.AsJSON;
+    List.SaveToFile(FileName);
+  finally
+    List.Free;
   end;
 end;
 
