@@ -69,8 +69,10 @@ type
   private
     FTripID: Integer;
     FQuery: TSQLQuery;
-    FTracks: TJSONArray;
+    FTracks, FPoints: TJSONArray;
     function GetManager: TPlayerExporterManager;
+    procedure ExportPoints;
+    procedure ExportTracks;
   protected
     procedure Execute; override;
   public
@@ -94,29 +96,62 @@ begin
   Result:=inherited Manager as TPlayerExporterManager;
 end;
 
-procedure TPlayerExporterThread.Execute;
+procedure TPlayerExporterThread.ExportPoints;
+var
+  Field: TField;
+  Point: TJSONObject;
+begin
+  LoadTextFromResource(FQuery.SQL, 'GET_POINTS');
+  FQuery.Open;
+
+  while not FQuery.EOF do
+  begin
+    if Terminated then Break;
+
+    Point:=TJSONObject.Create;
+    for Field in FQuery.Fields do
+      Point.Strings[Field.FieldName]:=Field.AsString;
+
+    FPoints.Add(Point);
+  end;
+
+  FQuery.Close;
+end;
+
+procedure TPlayerExporterThread.ExportTracks;
 var
   Track: TJSONObject;
 begin
+  FQuery.Open;
+
+  while not FQuery.EOF do
+  begin
+    if Terminated then Break;
+
+    Track:=TJSONObject.Create;
+    Track.Strings['filename']:=FQuery.FieldByName('filename').AsString;
+    Track.Integers['rn']:=FQuery.FieldByName('trip_rn').AsInteger;
+    Track.Integers['start_id']:=FQuery.FieldByName('start_id').AsInteger;
+    Track.Integers['end_id']:=FQuery.FieldByName('end_id').AsInteger;
+
+    FTracks.Add(Track);
+    FQuery.Next;
+  end;
+
+  FQuery.Close;
+end;
+
+procedure TPlayerExporterThread.Execute;
+begin
   try
-    FQuery.Open;
-    while not FQuery.EOF do
-    begin
-      if Terminated then Break;
-
-      Track:=TJSONObject.Create;
-      Track.Strings['filename']:=FQuery.FieldByName('filename').AsString;
-      Track.Integers['rn']:=FQuery.FieldByName('trip_rn').AsInteger;
-      Track.Integers['start_id']:=FQuery.FieldByName('start_id').AsInteger;
-      Track.Integers['end_id']:=FQuery.FieldByName('end_id').AsInteger;
-
-      FTracks.Add(Track);
-      FQuery.Next;
-    end;
+    ExportTracks;
+    ExportPoints;
 
     if not Terminated then
     begin
       Manager.SaveJson(Format('%stracks_%d.json', [Manager.Exporter.FDir, FTripID]), FTracks);
+      Manager.SaveJson(Format('%spoints_%d.json', [Manager.Exporter.FDir, FTripID]), FPoints);
+
       Synchronize(@Manager.Exporter.DoProcess);
     end;
   except
@@ -138,6 +173,8 @@ begin
   FTripID:=ATripID;
 
   FTracks:=TJSONArray.Create;
+  FPoints:=TJSONArray.Create;
+
   FQuery:=Manager.Exporter.CreateQuery('GET_TRIPS_TRACKS');
   FQuery.ParamByName('trip_id').AsInteger:=FTripID;
 end;
@@ -146,6 +183,7 @@ destructor TPlayerExporterThread.Destroy;
 begin
   FQuery.Free;
   FTracks.Free;
+  FPoints.Free;
   inherited;
 end;
 
