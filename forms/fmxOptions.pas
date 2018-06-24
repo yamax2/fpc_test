@@ -213,7 +213,7 @@ begin
     with TfmProgress.Create(Self) do
     try
       ProgressBar.Position:=0;
-      TrackCount:=FExtractor.Count;
+      TrackCount:=FExporter.Count;
       FExporter.OnFinish:=@ProcessFinished;
       FExporter.OnProcess:=@Processed;
 

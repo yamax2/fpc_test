@@ -4,20 +4,18 @@ object dmPlayer: TdmPlayer
   HorizontalOffset = 763
   VerticalOffset = 600
   Width = 337
+  PPI = 96
   object Connection: TSQLite3Connection
     Connected = False
     LoginPrompt = False
     KeepConnection = False
     Transaction = Transaction
-    OnLog = ConnectionLog
-    Options = []
     left = 32
     top = 8
   end
   object Transaction: TSQLTransaction
     Active = False
     Database = Connection
-    Options = []
     left = 112
     top = 8
   end
@@ -50,7 +48,6 @@ object dmPlayer: TdmPlayer
     FieldDefs = <>
     Database = Connection
     Transaction = Transaction
-    Options = []
     Params = <>
     left = 112
     top = 80

@@ -20,12 +20,13 @@ type
 
   TPlayerExporter = class
   private
+    FCount: Integer;
     FExported, FFailed: Boolean;
     FOnFinish: TNotifyEvent;
     FOnProcess: TPlayerProcessEvent;
     FSessionID, FDir: String;
     FProcessedCount: Integer;
-    function GetCount: Integer;
+    procedure CalcTripsForSession;
   protected
     function CreateQuery(const SQLResource: String = ''): TSQLQuery;
     procedure DoFinish; virtual;
@@ -35,7 +36,7 @@ type
     destructor Destroy; override;
     function ExportData: TPlayerThreadManager;
 
-    property Count: Integer read GetCount;
+    property Count: Integer read FCount;
     property Exported: Boolean read FExported;
     property SessionID: String read FSessionID;
 
@@ -113,6 +114,7 @@ begin
       Point.Strings[Field.FieldName]:=Field.AsString;
 
     FPoints.Add(Point);
+    FQuery.Next;
   end;
 
   FQuery.Close;
@@ -309,9 +311,20 @@ end;
 
 { TPlayerExporter }
 
-function TPlayerExporter.GetCount: Integer;
+procedure TPlayerExporter.CalcTripsForSession;
+var
+  Query: TSQLQuery;
 begin
-  Result:=0;
+  Query:=CreateQuery('GET_TRIPS_COUNT');
+  Query.ParamByName('session_id').AsString:=FSessionID;
+
+  Query.Open;
+  try
+    FCount:=0;
+    if not Query.IsEmpty then FCount:=Query.FieldByName('cc').AsInteger;
+  finally
+    Query.Close;
+  end;
 end;
 
 function TPlayerExporter.CreateQuery(const SQLResource: String): TSQLQuery;
@@ -351,7 +364,7 @@ begin
   logger.log('recreating dir: %s', [FDir]);
   ForceDirectories(FDir);
 
-  if dmPlayer <> nil then ;
+  CalcTripsForSession;
 end;
 
 destructor TPlayerExporter.Destroy;
@@ -367,6 +380,7 @@ begin
 
   FProcessedCount:=0;
   FFailed:=False;
+  if FCount = 0 then Exit;
 
   Result:=TPlayerExporterManager.Create(Self);
   Result.Start;
