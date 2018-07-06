@@ -28,6 +28,7 @@ $(document)
     });
 
     var path = '/win/video/2018_01 - Тотьма/zz01-02-01-2018/';
+    alert(path);
     var files = [
        '07/01021929_0001.MP4',
        '07/01021937_0002.MP4',
