@@ -218,7 +218,7 @@ begin
   Html:=TStringList.Create;
   try
     Html.LoadFromFile('html/dist/index.html');
-    Html.Text:=Html.Text.Replace('{{trips}}', FData.AsJson).Replace('bundle.js', '../../../html/dist/bundle.js');
+    Html.Text:=Html.Text.Replace('bundle.js', '../../../html/dist/bundle.js');
 
     Html.SaveToFile(FExporter.FDir + 'index.html');
   finally
@@ -239,7 +239,7 @@ begin
       [id, Exporter.FSessionID]);
     Result:=TPlayerExporterThread.Create(Self, id);
 
-    // SaveJson(Format('%strips.json', [Exporter.FDir]), FData);
+    SaveJson(Format('%strips.json', [Exporter.FDir]), FData);
     FQuery.Next;
   end
 end;
