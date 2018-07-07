@@ -52,6 +52,7 @@ type
     FQuery: TSQLQuery;
     FData: TJSONArray;
     procedure AddTrip;
+    procedure GenerateHtml;
   protected
     function GetNextThread: TPlayerThread; override;
     procedure Execute; override;
@@ -210,6 +211,21 @@ begin
   );
 end;
 
+procedure TPlayerExporterManager.GenerateHtml;
+var
+  Html: TStringList;
+begin
+  Html:=TStringList.Create;
+  try
+    Html.LoadFromFile('html/dist/index.html');
+    Html.Text:=Html.Text.Replace('{{trips}}', FData.AsJson).Replace('bundle.js', '../../../html/dist/bundle.js');
+
+    Html.SaveToFile(FExporter.FDir + 'index.html');
+  finally
+    Html.Free;
+  end;
+end;
+
 function TPlayerExporterManager.GetNextThread: TPlayerThread;
 var
   id: Integer;
@@ -223,7 +239,7 @@ begin
       [id, Exporter.FSessionID]);
     Result:=TPlayerExporterThread.Create(Self, id);
 
-    SaveJson(Format('%strips.json', [Exporter.FDir]), FData);
+    // SaveJson(Format('%strips.json', [Exporter.FDir]), FData);
     FQuery.Next;
   end
 end;
@@ -235,7 +251,10 @@ begin
       inherited;
 
       if FQuery.EOF then
+      begin
         Exporter.FExported:=True;
+        GenerateHtml;
+      end;
     except
       on E: Exception do
       begin
