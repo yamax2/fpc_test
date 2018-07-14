@@ -218,7 +218,10 @@ begin
   Html:=TStringList.Create;
   try
     Html.LoadFromFile('html/dist/index.html');
-    Html.Text:=Html.Text.Replace('bundle.js', '../../../html/dist/bundle.js');
+
+    Html.Text:=Html.Text.Replace('bundle.js', '../../../html/dist/bundle.js')
+                        .Replace('{{trips}}', FData.AsJson)
+                        .Replace('{{tracks}}', '');
 
     Html.SaveToFile(FExporter.FDir + 'index.html');
   finally
