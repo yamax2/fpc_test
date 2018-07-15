@@ -1,4 +1,4 @@
-import './css/style.css';
+import './css/style.sass';
 
 var $ = require('jquery');
 require('./jquery-resizable.min');
@@ -31,8 +31,6 @@ $(document)
     //$source
     //  .attr('src', files[0])
     //  .appendTo($video);
-
-    alert(JSON.stringify(trips, null, 2));
 
     var $video = $('#video');
     $video.data('index', 0);
