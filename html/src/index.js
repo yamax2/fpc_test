@@ -3,6 +3,23 @@ import './css/style.sass';
 var $ = require('jquery');
 require('./jquery-resizable.min');
 
+function prepareTable() {
+  var $table = $('.file-list table');
+  var $row = $('thead tr:first-child', $table);
+  var $tbody = $('tbody', $table);
+
+  $.each(trips, function() {
+    var $new_row = $('<tr></tr>');
+    var trip = this;
+
+    $.each($('th', $row), function() {
+      $new_row.append($('<td>' + trip[$(this).data('col')] + '</td>'));
+    });
+
+    $tbody.append($new_row);
+  });
+}
+
 $(document)
   .on('click', '#play', function() {
     var $video = $('#video');
@@ -26,6 +43,8 @@ $(document)
       resizeWidth: false,
       resizeHeightFrom: 'top'
     });
+
+    prepareTable();
 
     //var $source = $('<source type="video/mp4"></source>');
     //$source
