@@ -195,15 +195,17 @@ end;
 procedure TPlayerExporterManager.AddTrip;
 var
   obj: TJSONObject;
+  Duration: Integer;
 begin
   obj:=TJSONObject.Create;
 
+  Duration:=FQuery.FieldByName('duration').AsInteger;
   obj.Integers['id']:=FQuery.FieldByName('id').AsInteger;
   obj.Strings['started_at']:=FQuery.FieldByName('started_at').AsString;
-  obj.Integers['duration']:=FQuery.FieldByName('duration').AsInteger;
-  obj.Strings['distance']:=FloatToStr(RoundTo(FQuery.FieldByName('distance').AsFloat, -2));
+  obj.Strings['duration']:=Format('%d:%d', [Duration div 3600, (Duration mod 3600) div 60]);
+  obj.Strings['distance']:=FloatToStr(RoundTo(FQuery.FieldByName('distance').AsFloat / 1000, -2));
   obj.Strings['avg_speed']:=FloatToStr(RoundTo(FQuery.FieldByName('avg_speed').AsFloat, -2));
-  obj.Strings['size']:=FloatToStr(RoundTo(FQuery.FieldByName('size_mb').AsFloat, -2));
+  obj.Strings['size']:=FloatToStr(RoundTo(FQuery.FieldByName('size_mb').AsFloat / 1024, -2));
 
   FData.Add(obj);
   (FQuery.FieldByName('gpx') as TBlobField).SaveToFile(
