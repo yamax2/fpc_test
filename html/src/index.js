@@ -3,13 +3,15 @@ import './css/style.sass';
 var $ = require('jquery');
 require('./jquery-resizable.min');
 
+var selected = 0;
+
 function prepareTable() {
   var $table = $('.file-list table');
   var $row = $('thead tr:first-child', $table);
   var $tbody = $('tbody', $table);
 
-  $.each(trips, function() {
-    var $new_row = $('<tr></tr>');
+  $.each(trips, function(i) {
+    var $new_row = $('<tr data-index="' + i + '"></tr>');
     var trip = this;
 
     $.each($('th', $row), function() {
@@ -20,12 +22,28 @@ function prepareTable() {
   });
 }
 
+function selectRow(index) {
+  var $table = $('.file-list table');
+  var $selected = $('.selected', $table);
+
+  if (($selected.length > 0) && ($selected.data('index') === index)) {
+    return;
+  }
+
+  $selected.removeClass('selected');
+  $('tr[data-index="' + index + '"]', $table).addClass('selected');
+}
+
 $(document)
+  .on('click', '.file-list table tr[data-index] td', function() {
+    selected = $(this).closest('tr').data('index');
+    selectRow(selected);
+   })
   .on('click', '#play', function() {
     var $video = $('#video');
     $video.data('rate', 5.0);
 
-    var video = $video[0];
+    var video = $video[selected];
 
     video.playbackRate = $video.data('rate');
     video.play();
@@ -45,6 +63,7 @@ $(document)
     });
 
     prepareTable();
+    selectRow(selected);
 
     //var $source = $('<source type="video/mp4"></source>');
     //$source
@@ -52,7 +71,7 @@ $(document)
     //  .appendTo($video);
 
     var $video = $('#video');
-    $video.data('index', 0);
+    $video.data('index', selected);
 
     $video
       .on('timeupdate', function() {
